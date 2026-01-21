@@ -1,4 +1,4 @@
-# BrightHome - Professional Cleaning Services Platform
+# CleanUpCrew - Professional Cleaning Services Platform
 
 ## Original Problem Statement
 Build a modern, high-converting cleaning services website inspired by smoothcleaning.ae with:

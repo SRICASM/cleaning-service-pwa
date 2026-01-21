@@ -43,7 +43,7 @@ const LoginPage = () => {
             <div className="w-10 h-10 rounded-xl bg-green-900 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-lime-400" />
             </div>
-            <span className="font-heading font-bold text-xl text-green-900">BrightHome</span>
+            <span className="font-heading font-bold text-xl text-green-900">CleanUpCrew</span>
           </Link>
 
           <h1 className="font-heading text-3xl font-bold text-green-900 mb-2">
@@ -109,7 +109,7 @@ const LoginPage = () => {
           {/* Demo credentials */}
           <div className="mt-8 p-4 bg-lime-50 rounded-xl border border-lime-200">
             <p className="text-sm font-medium text-lime-800 mb-2">Demo Admin Credentials:</p>
-            <p className="text-sm text-lime-700">Email: admin@brighthome.com</p>
+            <p className="text-sm text-lime-700">Email: admin@cleanupcrew.com</p>
             <p className="text-sm text-lime-700">Password: admin123</p>
           </div>
         </div>

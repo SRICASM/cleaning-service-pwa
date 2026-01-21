@@ -1,4 +1,4 @@
--- BrightHome Cleaning Services
+-- CleanUpCrew Cleaning Services
 -- PostgreSQL Database Schema
 -- Version 1.0
 
@@ -411,7 +411,7 @@ INSERT INTO add_ons (name, slug, description, price, duration_hours, icon, displ
 
 -- Admin User (password: admin123)
 INSERT INTO users (email, password_hash, first_name, last_name, phone, role, status, email_verified) VALUES
-('admin@brighthome.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4HlPtU4KNNpJPGEi', 'Admin', 'User', '+1234567890', 'admin', 'active', true);
+('admin@cleanupcrew.com', '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/X4HlPtU4KNNpJPGEi', 'Admin', 'User', '+1234567890', 'admin', 'active', true);
 
 -- Time Slots
 INSERT INTO time_slots (day_of_week, start_time, end_time, max_bookings) VALUES

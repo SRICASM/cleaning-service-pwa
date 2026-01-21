@@ -1,4 +1,4 @@
-# BrightHome Cleaning Service - Complete Setup Guide
+# CleanUpCrew Cleaning Service - Complete Setup Guide
 
 ## Prerequisites
 - **macOS** (or Linux/Windows with adjustments)
@@ -65,7 +65,7 @@ pip install -r requirements.txt
 Create `backend/.env`:
 ```
 MONGO_URL=mongodb://localhost:27017
-DB_NAME=brighthome
+DB_NAME=cleanupcrew
 JWT_SECRET=super-secret-key-change-this-in-prod
 STRIPE_API_KEY=sk_test_placeholder
 CORS_ORIGINS=http://localhost:3000
@@ -206,7 +206,7 @@ Keep this terminal open. Browser will open automatically.
 - **API Docs:** http://localhost:8000/docs
 
 ## Default Login
-- **Admin:** admin@brighthome.com / admin123
+- **Admin:** admin@cleanupcrew.com / admin123
 
 ---
 

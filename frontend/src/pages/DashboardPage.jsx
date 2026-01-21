@@ -136,7 +136,7 @@ const DashboardPage = () => {
                 No bookings yet
               </h3>
               <p className="text-stone-600 mb-6">
-                Book your first cleaning and experience the BrightHome difference.
+                Book your first cleaning and experience the CleanUpCrew difference.
               </p>
               <Link to="/booking">
                 <Button className="bg-green-900 hover:bg-green-800 text-white rounded-full" data-testid="dashboard-first-booking">

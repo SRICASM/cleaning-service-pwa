@@ -1,5 +1,5 @@
 """
-BrightHome Cleaning Services API
+CleanUpCrew Cleaning Services API
 ================================
 Production-ready backend for cleaning services marketplace.
 

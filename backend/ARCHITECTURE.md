@@ -1,4 +1,4 @@
-# BrightHome Backend Architecture - SQL Implementation
+# CleanUpCrew Backend Architecture - SQL Implementation
 
 ## 1. Product Requirements Summary (Backend Perspective)
 

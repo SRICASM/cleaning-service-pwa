@@ -59,7 +59,7 @@ const ContactPage = () => {
     {
       icon: Mail,
       title: 'Email',
-      details: 'hello@brighthome.com',
+      details: 'hello@cleanupcrew.com',
       subtext: 'We reply within 24 hours'
     },
     {

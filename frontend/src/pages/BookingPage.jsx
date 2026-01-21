@@ -211,7 +211,7 @@ const BookingPage = () => {
           </button>
           <div className="flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-green-900" />
-            <span className="font-heading font-bold text-xl text-green-900">BrightHome</span>
+            <span className="font-heading font-bold text-xl text-green-900">CleanUpCrew</span>
           </div>
           <div className="w-20" />
         </div>

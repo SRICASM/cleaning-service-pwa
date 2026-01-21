@@ -1,5 +1,5 @@
 {
-  "summary": "Comprehensive testing of BrightHome cleaning services website completed. All backend APIs working perfectly (25/25 tests passed). Frontend functionality tested successfully including user registration, admin login, contact form, and navigation. All core features operational.",
+  "summary": "Comprehensive testing of CleanUpCrew cleaning services website completed. All backend APIs working perfectly (25/25 tests passed). Frontend functionality tested successfully including user registration, admin login, contact form, and navigation. All core features operational.",
   
   "backend_issues": {
     "critical_bugs": [],

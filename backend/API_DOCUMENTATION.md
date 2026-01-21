@@ -1,4 +1,4 @@
-# BrightHome API Endpoints Documentation
+# CleanUpCrew API Endpoints Documentation
 
 ## Authentication Endpoints
 
@@ -311,7 +311,7 @@ Create Stripe checkout session.
 ```json
 {
   "booking_id": 123,
-  "origin_url": "https://brighthome.com"
+  "origin_url": "https://cleanupcrew.com"
 }
 ```
 - **Response:**

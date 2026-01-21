@@ -22,7 +22,7 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # JWT Settings
-JWT_SECRET = os.environ.get('JWT_SECRET', 'brighthome-secret-key-2024')
+JWT_SECRET = os.environ.get('JWT_SECRET', 'cleanupcrew-secret-key-2024')
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_HOURS = 24
 
@@ -30,7 +30,7 @@ JWT_EXPIRATION_HOURS = 24
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', 'sk_test_emergent')
 
 # Create the main app
-app = FastAPI(title="BrightHome Cleaning API")
+app = FastAPI(title="CleanUpCrew Cleaning API")
 api_router = APIRouter(prefix="/api")
 
 # ==================== MODELS ====================
@@ -654,11 +654,11 @@ async def seed_data():
     await db.services.insert_many(services)
     
     # Create admin user
-    admin_exists = await db.users.find_one({"email": "admin@brighthome.com"})
+    admin_exists = await db.users.find_one({"email": "admin@cleanupcrew.com"})
     if not admin_exists:
         admin_doc = {
             "id": str(uuid.uuid4()),
-            "email": "admin@brighthome.com",
+            "email": "admin@cleanupcrew.com",
             "name": "Admin User",
             "phone": "+1234567890",
             "password": hash_password("admin123"),
@@ -671,7 +671,7 @@ async def seed_data():
 
 @api_router.get("/")
 async def root():
-    return {"message": "BrightHome Cleaning API", "status": "running"}
+    return {"message": "CleanUpCrew Cleaning API", "status": "running"}
 
 # Include router
 app.include_router(api_router)

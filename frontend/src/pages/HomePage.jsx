@@ -73,14 +73,14 @@ const HomePage = () => {
     {
       name: 'Sarah Johnson',
       role: 'Homeowner',
-      content: "BrightHome has transformed my weekly routine. The team is professional, thorough, and I love coming home to a spotless house!",
+      content: "CleanUpCrew has transformed my weekly routine. The team is professional, thorough, and I love coming home to a spotless house!",
       rating: 5,
       image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop'
     },
     {
       name: 'Michael Chen',
       role: 'Office Manager',
-      content: "We switched to BrightHome for our office cleaning and the difference is remarkable. Reliable, consistent, and great value.",
+      content: "We switched to CleanUpCrew for our office cleaning and the difference is remarkable. Reliable, consistent, and great value.",
       rating: 5,
       image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop'
     },
@@ -383,7 +383,7 @@ const HomePage = () => {
             Ready for a Spotless Space?
           </h2>
           <p className="text-stone-600 text-lg mb-10 max-w-2xl mx-auto">
-            Book your first cleaning today and experience the BrightHome difference. Professional, reliable, and satisfaction guaranteed.
+            Book your first cleaning today and experience the CleanUpCrew difference. Professional, reliable, and satisfaction guaranteed.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link to="/booking">

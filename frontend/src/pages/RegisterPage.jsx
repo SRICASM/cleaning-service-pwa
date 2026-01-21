@@ -61,7 +61,7 @@ const RegisterPage = () => {
           <div className="absolute inset-0 flex items-center justify-center p-12">
             <div className="text-center text-white">
               <h2 className="font-heading text-4xl font-bold mb-4">
-                Join BrightHome Today
+                Join CleanUpCrew Today
               </h2>
               <p className="text-white/80 text-lg max-w-md">
                 Create an account to book cleanings, track appointments, and enjoy exclusive member benefits.
@@ -78,7 +78,7 @@ const RegisterPage = () => {
             <div className="w-10 h-10 rounded-xl bg-green-900 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-lime-400" />
             </div>
-            <span className="font-heading font-bold text-xl text-green-900">BrightHome</span>
+            <span className="font-heading font-bold text-xl text-green-900">CleanUpCrew</span>
           </Link>
 
           <h1 className="font-heading text-3xl font-bold text-green-900 mb-2">

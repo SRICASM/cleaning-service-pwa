@@ -5,8 +5,8 @@ import sys
 import json
 from datetime import datetime, timedelta
 
-class BrightHomeAPITester:
-    def __init__(self, base_url="https://brighthome.preview.emergentagent.com"):
+class CleanUpCrewAPITester:
+    def __init__(self, base_url="https://cleanupcrew.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
@@ -131,7 +131,7 @@ class BrightHomeAPITester:
     def test_admin_login(self):
         """Test admin login"""
         admin_data = {
-            "email": "admin@brighthome.com",
+            "email": "admin@cleanupcrew.com",
             "password": "admin123"
         }
         
@@ -272,7 +272,7 @@ class BrightHomeAPITester:
 
     def run_all_tests(self):
         """Run comprehensive test suite"""
-        print(f"🧪 Starting BrightHome API Tests")
+        print(f"🧪 Starting CleanUpCrew API Tests")
         print(f"🌐 Testing against: {self.base_url}")
         print("=" * 60)
         
@@ -317,7 +317,7 @@ class BrightHomeAPITester:
             return 1
 
 def main():
-    tester = BrightHomeAPITester()
+    tester = CleanUpCrewAPITester()
     return tester.run_all_tests()
 
 if __name__ == "__main__":

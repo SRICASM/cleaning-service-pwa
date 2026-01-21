@@ -39,7 +39,7 @@ const AboutPage = () => {
       name: 'Sarah Mitchell',
       role: 'Founder & CEO',
       image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop',
-      bio: 'Started BrightHome with a vision to revolutionize the cleaning industry.'
+      bio: 'Started CleanUpCrew with a vision to revolutionize the cleaning industry.'
     },
     {
       name: 'David Chen',
@@ -76,7 +76,7 @@ const AboutPage = () => {
                 Bringing Sparkle to Every Space Since 2010
               </h1>
               <p className="text-stone-600 text-lg leading-relaxed">
-                BrightHome was founded with a simple mission: to provide exceptional cleaning services that give people back their most precious resource—time. What started as a small team of dedicated cleaners has grown into a trusted name in professional cleaning services.
+                CleanUpCrew was founded with a simple mission: to provide exceptional cleaning services that give people back their most precious resource—time. What started as a small team of dedicated cleaners has grown into a trusted name in professional cleaning services.
               </p>
             </div>
             <div className="relative">
@@ -179,7 +179,7 @@ const AboutPage = () => {
             </div>
             <span className="text-lime-600 font-medium uppercase tracking-wide text-sm">Our Team</span>
             <h2 className="font-heading text-3xl lg:text-4xl font-bold text-green-900 mt-3 mb-4">
-              Meet the People Behind BrightHome
+              Meet the People Behind CleanUpCrew
             </h2>
           </div>
           
@@ -210,7 +210,7 @@ const AboutPage = () => {
             Ready to Experience the Difference?
           </h2>
           <p className="text-green-100/80 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who trust BrightHome for their cleaning needs.
+            Join thousands of satisfied customers who trust CleanUpCrew for their cleaning needs.
           </p>
           <a href="/booking">
             <button className="bg-lime-500 hover:bg-lime-600 text-white px-10 py-4 rounded-full font-medium text-lg transition-all hover:scale-105" data-testid="about-cta">

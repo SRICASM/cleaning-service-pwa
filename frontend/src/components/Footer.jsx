@@ -12,7 +12,7 @@ const Footer = () => {
               <div className="w-10 h-10 rounded-xl bg-lime-500 flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="font-heading font-bold text-xl">BrightHome</span>
+              <span className="font-heading font-bold text-xl">CleanUpCrew</span>
             </Link>
             <p className="text-green-100/80 mb-6">
               Professional cleaning services that bring sparkle to your space. Trusted by thousands of happy customers.
@@ -68,7 +68,7 @@ const Footer = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-lime-400 flex-shrink-0" />
-                <a href="mailto:hello@brighthome.com" className="text-green-100/80 hover:text-lime-400 transition-colors">hello@brighthome.com</a>
+                <a href="mailto:hello@cleanupcrew.com" className="text-green-100/80 hover:text-lime-400 transition-colors">hello@cleanupcrew.com</a>
               </li>
             </ul>
           </div>
@@ -77,7 +77,7 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-green-800">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-green-100/60 text-sm">
-              © {new Date().getFullYear()} BrightHome Cleaning. All rights reserved.
+              © {new Date().getFullYear()} CleanUpCrew Cleaning. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
               <a href="#" className="text-green-100/60 hover:text-lime-400 transition-colors">Privacy Policy</a>

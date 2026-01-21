@@ -5,17 +5,17 @@ from typing import Optional
 
 class Settings(BaseSettings):
     # Application
-    APP_NAME: str = "BrightHome API"
+    APP_NAME: str = "CleanUpCrew API"
     APP_VERSION: str = "1.0.0"
     DEBUG: bool = False
     
     # Database
-    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/brighthome"
+    DATABASE_URL: str = "postgresql://postgres:postgres@localhost:5432/cleanupcrew"
     DB_POOL_SIZE: int = 5
     DB_MAX_OVERFLOW: int = 10
     
     # JWT
-    JWT_SECRET_KEY: str = "brighthome-super-secret-key-change-in-production"
+    JWT_SECRET_KEY: str = "cleanupcrew-super-secret-key-change-in-production"
     JWT_ALGORITHM: str = "HS256"
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     
     # Email (SendGrid)
     SENDGRID_API_KEY: Optional[str] = None
-    FROM_EMAIL: str = "noreply@brighthome.com"
+    FROM_EMAIL: str = "noreply@cleanupcrew.com"
     
     # SMS (Twilio)
     TWILIO_ACCOUNT_SID: Optional[str] = None

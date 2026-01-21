@@ -1,4 +1,4 @@
-# BrightHome Backend - Development Roadmap
+# CleanUpCrew Backend - Development Roadmap
 
 ## Phase 1: MVP (Current Implementation)
 **Duration: 2-3 weeks**

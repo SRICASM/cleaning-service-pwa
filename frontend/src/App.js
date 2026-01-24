@@ -9,6 +9,9 @@ import BookingSuccessPage from "./pages/BookingSuccessPage";
 import BookingCancelPage from "./pages/BookingCancelPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
+import PropertySetupPage from "./pages/PropertySetupPage";
 import DashboardPage from "./pages/DashboardPage";
 import AdminDashboard from "./pages/AdminDashboard";
 import AboutPage from "./pages/AboutPage";
@@ -22,7 +25,7 @@ const API = `${BACKEND_URL}/api`;
 // Protected Route Component
 const ProtectedRoute = ({ children, adminOnly = false }) => {
   const { user, loading } = useAuth();
-  
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -30,15 +33,15 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
       </div>
     );
   }
-  
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  
+
   if (adminOnly && user.role !== "admin") {
     return <Navigate to="/dashboard" replace />;
   }
-  
+
   return children;
 };
 
@@ -63,45 +66,55 @@ function AppRoutes() {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
-      <Route 
-        path="/booking" 
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route
+        path="/setup-property"
+        element={
+          <ProtectedRoute>
+            <PropertySetupPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/booking"
         element={
           <ProtectedRoute>
             <BookingPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/booking/success" 
+      <Route
+        path="/booking/success"
         element={
           <ProtectedRoute>
             <BookingSuccessPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/booking/cancel" 
+      <Route
+        path="/booking/cancel"
         element={
           <ProtectedRoute>
             <BookingCancelPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/dashboard" 
+      <Route
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <DashboardPage />
           </ProtectedRoute>
-        } 
+        }
       />
-      <Route 
-        path="/admin/*" 
+      <Route
+        path="/admin/*"
         element={
           <ProtectedRoute adminOnly>
             <AdminDashboard />
           </ProtectedRoute>
-        } 
+        }
       />
     </Routes>
   );

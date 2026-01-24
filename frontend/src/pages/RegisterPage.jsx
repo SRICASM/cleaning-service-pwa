@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
-import { Sparkles, Mail, Lock, User, Phone, ArrowRight } from 'lucide-react';
+import { Sparkles, Mail, Lock, User, Phone, ArrowRight, MapPin } from 'lucide-react';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -15,6 +15,9 @@ const RegisterPage = () => {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [postalCode, setPostalCode] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Redirect if already logged in
@@ -25,7 +28,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
       return;
@@ -36,11 +39,16 @@ const RegisterPage = () => {
       return;
     }
 
+    if (!address || !city || !postalCode) {
+      toast.error('Please fill in your address details');
+      return;
+    }
+
     setLoading(true);
     try {
-      await register(name, email, password, phone);
+      await register(name, email, password, phone, address, city, postalCode);
       toast.success('Account created successfully!');
-      navigate('/dashboard');
+      navigate('/setup-property');
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Registration failed');
     } finally {
@@ -170,6 +178,59 @@ const RegisterPage = () => {
                   required
                   data-testid="register-confirm-password"
                 />
+              </div>
+            </div>
+
+            {/* Address Section */}
+            <div className="border-t border-stone-200 pt-5 mt-5">
+              <p className="text-sm font-medium text-stone-700 mb-4">Your Address (for service location)</p>
+
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="address">Street Address</Label>
+                  <div className="relative mt-2">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                    <Input
+                      id="address"
+                      type="text"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="123 Main Street, Apt 4B"
+                      className="pl-10"
+                      required
+                      data-testid="register-address"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      type="text"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="San Francisco"
+                      className="mt-2"
+                      required
+                      data-testid="register-city"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="postalCode">Postal Code</Label>
+                    <Input
+                      id="postalCode"
+                      type="text"
+                      value={postalCode}
+                      onChange={(e) => setPostalCode(e.target.value)}
+                      placeholder="94102"
+                      className="mt-2"
+                      required
+                      data-testid="register-postal"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 

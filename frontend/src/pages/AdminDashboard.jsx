@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/button';
@@ -130,7 +130,7 @@ const DashboardOverview = () => {
   return (
     <div>
       <h1 className="font-heading text-2xl font-bold text-green-900 mb-6">Dashboard Overview</h1>
-      
+
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
         {statCards.map((stat, index) => (
@@ -195,7 +195,7 @@ const BookingsManagement = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     setLoading(true);
     try {
       const params = statusFilter !== 'all' ? { status: statusFilter } : {};
@@ -209,11 +209,11 @@ const BookingsManagement = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [statusFilter, getAuthHeaders]);
 
   useEffect(() => {
     fetchBookings();
-  }, [statusFilter]);
+  }, [fetchBookings]);
 
   const updateStatus = async (bookingId, newStatus) => {
     try {

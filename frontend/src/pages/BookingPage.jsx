@@ -32,7 +32,7 @@ const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 const BookingPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { getAuthHeaders } = useAuth();
+  const { getAuthHeaders, user } = useAuth();
 
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -41,13 +41,7 @@ const BookingPage = () => {
 
   // Booking data
   const [selectedService, setSelectedService] = useState(null);
-  const [propertyType, setPropertyType] = useState('');
-  const [propertySize, setPropertySize] = useState(1000);
-  const [bedrooms, setBedrooms] = useState(2);
-  const [bathrooms, setBathrooms] = useState(1);
-  const [address, setAddress] = useState('');
-  const [city, setCity] = useState('');
-  const [postalCode, setPostalCode] = useState('');
+  // Property details now come from user profile
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState('');
   const [selectedAddOns, setSelectedAddOns] = useState([]);
@@ -90,7 +84,7 @@ const BookingPage = () => {
 
   const calculateTotal = () => {
     if (!selectedService) return 0;
-    let total = selectedService.base_price + (selectedService.price_per_sqft * propertySize);
+    let total = selectedService.base_price;
     selectedAddOns.forEach(addonId => {
       const addon = addOns.find(a => a.id === addonId);
       if (addon) total += addon.price;
@@ -115,12 +109,6 @@ const BookingPage = () => {
         }
         return true;
       case 2:
-        if (!propertyType || !address || !city || !postalCode) {
-          toast.error('Please fill in all address details');
-          return false;
-        }
-        return true;
-      case 3:
         if (!selectedDate || !selectedTime) {
           toast.error('Please select date and time');
           return false;
@@ -133,28 +121,32 @@ const BookingPage = () => {
 
   const nextStep = () => {
     if (validateStep()) {
-      setStep(prev => Math.min(prev + 1, 4));
+      setStep(prev => Math.min(prev + 1, 3));
     }
   };
 
   const prevStep = () => {
-    setStep(prev => Math.max(prev - 1, 1));
+    if (step === 1) {
+      navigate(-1);
+    } else {
+      setStep(prev => prev - 1);
+    }
   };
 
   const handleSubmit = async () => {
     setLoading(true);
     try {
-      // Create booking
+      // Create booking - use property details from user profile
       const bookingData = {
         service_id: selectedService.id,
         service_name: selectedService.name,
-        property_type: propertyType,
-        property_size: propertySize,
-        bedrooms: bedrooms,
-        bathrooms: bathrooms,
-        address: address,
-        city: city,
-        postal_code: postalCode,
+        property_type: user?.property_type || 'house',
+        property_size: 0,
+        bedrooms: user?.bedrooms || 2,
+        bathrooms: user?.bathrooms || 1,
+        address: user?.address || '',
+        city: user?.city || '',
+        postal_code: user?.postal_code || '',
         scheduled_date: format(selectedDate, 'yyyy-MM-dd'),
         scheduled_time: selectedTime,
         add_ons: selectedAddOns,
@@ -191,29 +183,19 @@ const BookingPage = () => {
 
   const steps = [
     { number: 1, title: 'Service' },
-    { number: 2, title: 'Details' },
-    { number: 3, title: 'Schedule' },
-    { number: 4, title: 'Review' },
+    { number: 2, title: 'Schedule' },
+    { number: 3, title: 'Review' },
   ];
 
   return (
     <div className="min-h-screen bg-stone-50">
       {/* Header */}
       <header className="bg-white border-b border-stone-200 py-4">
-        <div className="max-w-4xl mx-auto px-6 flex items-center justify-between">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-stone-600 hover:text-green-900"
-            data-testid="booking-back"
-          >
-            <ArrowLeft className="w-5 h-5" />
-            Back
-          </button>
+        <div className="max-w-4xl mx-auto px-6 flex items-center justify-center">
           <div className="flex items-center gap-2">
             <Sparkles className="w-6 h-6 text-green-900" />
             <span className="font-heading font-bold text-xl text-green-900">CleanUpCrew</span>
           </div>
-          <div className="w-20" />
         </div>
       </header>
 
@@ -286,160 +268,9 @@ const BookingPage = () => {
             </div>
           )}
 
-          {/* Step 2: Property Details */}
+
+          {/* Step 2: Schedule */}
           {step === 2 && (
-            <div className="animate-fadeIn">
-              <h2 className="font-heading text-2xl md:text-3xl font-bold text-green-900 mb-2">
-                Property Details
-              </h2>
-              <p className="text-stone-600 mb-8">
-                Tell us about your space so we can provide accurate pricing.
-              </p>
-
-              <div className="space-y-8">
-                {/* Property Type */}
-                <div>
-                  <Label className="text-base font-medium mb-4 block">Property Type</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {propertyTypes.map((type) => (
-                      <div
-                        key={type.id}
-                        onClick={() => setPropertyType(type.id)}
-                        className={`selection-card text-center py-6 ${propertyType === type.id ? 'selected' : ''}`}
-                        data-testid={`property-${type.id}`}
-                      >
-                        <type.icon className={`w-8 h-8 mx-auto mb-2 ${propertyType === type.id ? 'text-green-900' : 'text-stone-400'}`} />
-                        <span className="font-medium">{type.name}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Size & Rooms */}
-                <div className="grid md:grid-cols-3 gap-6">
-                  <div>
-                    <Label htmlFor="size">Property Size (sq ft)</Label>
-                    <div className="flex items-center gap-3 mt-2">
-                      <button
-                        onClick={() => setPropertySize(Math.max(500, propertySize - 100))}
-                        className="w-10 h-10 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100"
-                        data-testid="size-decrease"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <Input
-                        id="size"
-                        type="number"
-                        value={propertySize}
-                        onChange={(e) => setPropertySize(parseInt(e.target.value) || 500)}
-                        className="text-center"
-                        data-testid="property-size"
-                      />
-                      <button
-                        onClick={() => setPropertySize(propertySize + 100)}
-                        className="w-10 h-10 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100"
-                        data-testid="size-increase"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="bedrooms">Bedrooms</Label>
-                    <div className="flex items-center gap-3 mt-2">
-                      <button
-                        onClick={() => setBedrooms(Math.max(0, bedrooms - 1))}
-                        className="w-10 h-10 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <Input
-                        id="bedrooms"
-                        type="number"
-                        value={bedrooms}
-                        onChange={(e) => setBedrooms(parseInt(e.target.value) || 0)}
-                        className="text-center"
-                        data-testid="bedrooms"
-                      />
-                      <button
-                        onClick={() => setBedrooms(bedrooms + 1)}
-                        className="w-10 h-10 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="bathrooms">Bathrooms</Label>
-                    <div className="flex items-center gap-3 mt-2">
-                      <button
-                        onClick={() => setBathrooms(Math.max(1, bathrooms - 1))}
-                        className="w-10 h-10 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100"
-                      >
-                        <Minus className="w-4 h-4" />
-                      </button>
-                      <Input
-                        id="bathrooms"
-                        type="number"
-                        value={bathrooms}
-                        onChange={(e) => setBathrooms(parseInt(e.target.value) || 1)}
-                        className="text-center"
-                        data-testid="bathrooms"
-                      />
-                      <button
-                        onClick={() => setBathrooms(bathrooms + 1)}
-                        className="w-10 h-10 rounded-full border border-stone-300 flex items-center justify-center hover:bg-stone-100"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Address */}
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="address">Street Address</Label>
-                    <Input
-                      id="address"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      placeholder="123 Main Street, Apt 4B"
-                      className="mt-2"
-                      data-testid="address"
-                    />
-                  </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        value={city}
-                        onChange={(e) => setCity(e.target.value)}
-                        placeholder="San Francisco"
-                        className="mt-2"
-                        data-testid="city"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="postal">Postal Code</Label>
-                      <Input
-                        id="postal"
-                        value={postalCode}
-                        onChange={(e) => setPostalCode(e.target.value)}
-                        placeholder="94102"
-                        className="mt-2"
-                        data-testid="postal-code"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Step 3: Schedule */}
-          {step === 3 && (
             <div className="animate-fadeIn">
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-green-900 mb-2">
                 Pick a Date & Time
@@ -473,8 +304,8 @@ const BookingPage = () => {
                         key={time}
                         onClick={() => setSelectedTime(time)}
                         className={`p-4 rounded-xl border-2 font-medium transition-all ${selectedTime === time
-                            ? 'border-green-900 bg-green-50 text-green-900'
-                            : 'border-stone-200 hover:border-green-900/30'
+                          ? 'border-green-900 bg-green-50 text-green-900'
+                          : 'border-stone-200 hover:border-green-900/30'
                           }`}
                         data-testid={`time-${time.replace(/\s/g, '-')}`}
                       >
@@ -505,8 +336,8 @@ const BookingPage = () => {
                       <div className="flex items-center gap-3">
                         <span className="font-semibold text-lime-600">+${addon.price}</span>
                         <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selectedAddOns.includes(addon.id)
-                            ? 'bg-green-900 border-green-900'
-                            : 'border-stone-300'
+                          ? 'bg-green-900 border-green-900'
+                          : 'border-stone-300'
                           }`}>
                           {selectedAddOns.includes(addon.id) && (
                             <Check className="w-4 h-4 text-white" />
@@ -534,8 +365,8 @@ const BookingPage = () => {
             </div>
           )}
 
-          {/* Step 4: Review & Pay */}
-          {step === 4 && (
+          {/* Step 3: Review & Pay */}
+          {step === 3 && (
             <div className="animate-fadeIn">
               <h2 className="font-heading text-2xl md:text-3xl font-bold text-green-900 mb-2">
                 Review Your Booking
@@ -563,10 +394,10 @@ const BookingPage = () => {
                     Location
                   </div>
                   <p className="text-green-900">
-                    {address}, {city}, {postalCode}
+                    {user?.address}, {user?.city}, {user?.postal_code}
                   </p>
                   <p className="text-stone-500 text-sm mt-1">
-                    {propertyTypes.find(t => t.id === propertyType)?.name} • {propertySize} sq ft • {bedrooms} bed • {bathrooms} bath
+                    {propertyTypes.find(t => t.id === user?.property_type)?.name || 'House'} • {user?.bedrooms || 2} bed • {user?.bathrooms || 1} bath
                   </p>
                 </div>
 
@@ -591,10 +422,6 @@ const BookingPage = () => {
                     <div className="flex justify-between">
                       <span className="text-stone-600">{selectedService?.name}</span>
                       <span className="text-green-900">${selectedService?.base_price.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-stone-600">Size adjustment ({propertySize} sq ft)</span>
-                      <span className="text-green-900">${(selectedService?.price_per_sqft * propertySize).toFixed(2)}</span>
                     </div>
                     {selectedAddOns.map((addonId) => {
                       const addon = addOns.find(a => a.id === addonId);
@@ -622,7 +449,6 @@ const BookingPage = () => {
             <Button
               variant="outline"
               onClick={prevStep}
-              disabled={step === 1}
               className="rounded-full px-6"
               data-testid="booking-prev"
             >
@@ -630,7 +456,7 @@ const BookingPage = () => {
               Back
             </Button>
 
-            {step < 4 ? (
+            {step < 3 ? (
               <Button
                 onClick={nextStep}
                 className="bg-green-900 hover:bg-green-800 text-white rounded-full px-8"

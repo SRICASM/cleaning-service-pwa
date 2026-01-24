@@ -21,7 +21,7 @@ from app.config import settings
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", response_model=TokenResponse)
+@router.post("/register")
 async def register(
     data: UserRegister,
     db: Session = Depends(get_db)
@@ -61,15 +61,21 @@ async def register(
     db.add(token_record)
     db.commit()
     
-    return TokenResponse(
-        access_token=access_token,
-        refresh_token=refresh_token,
-        token_type="bearer",
-        expires_in=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60
-    )
+    # Return token and user data in format expected by frontend
+    return {
+        "token": access_token,
+        "refresh_token": refresh_token,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "name": f"{user.first_name} {user.last_name}",
+            "phone": user.phone,
+            "role": user.role.value
+        }
+    }
 
 
-@router.post("/login", response_model=TokenResponse)
+@router.post("/login")
 async def login(
     data: UserLogin,
     db: Session = Depends(get_db)
@@ -99,12 +105,18 @@ async def login(
     db.add(token_record)
     db.commit()
     
-    return TokenResponse(
-        access_token=access_token,
-        refresh_token=refresh_token,
-        token_type="bearer",
-        expires_in=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES * 60
-    )
+    # Return token and user data in format expected by frontend
+    return {
+        "token": access_token,
+        "refresh_token": refresh_token,
+        "user": {
+            "id": user.id,
+            "email": user.email,
+            "name": f"{user.first_name} {user.last_name}",
+            "phone": user.phone,
+            "role": user.role.value
+        }
+    }
 
 
 @router.post("/refresh", response_model=TokenResponse)

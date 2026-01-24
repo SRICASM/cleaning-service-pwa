@@ -42,6 +42,9 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    address: Optional[str] = None
+    city: Optional[str] = None
+    postal_code: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
@@ -177,6 +180,9 @@ async def register(user_data: UserCreate):
         "email": user_data.email,
         "name": user_data.name,
         "phone": user_data.phone,
+        "address": user_data.address,
+        "city": user_data.city,
+        "postal_code": user_data.postal_code,
         "password": hash_password(user_data.password),
         "role": "user",
         "created_at": now
@@ -192,6 +198,9 @@ async def register(user_data: UserCreate):
             "email": user_data.email,
             "name": user_data.name,
             "phone": user_data.phone,
+            "address": user_data.address,
+            "city": user_data.city,
+            "postal_code": user_data.postal_code,
             "role": "user"
         }
     }
@@ -211,6 +220,12 @@ async def login(credentials: UserLogin):
             "email": user["email"],
             "name": user["name"],
             "phone": user.get("phone"),
+            "address": user.get("address"),
+            "city": user.get("city"),
+            "postal_code": user.get("postal_code"),
+            "property_type": user.get("property_type"),
+            "bedrooms": user.get("bedrooms"),
+            "bathrooms": user.get("bathrooms"),
             "role": user.get("role", "user")
         }
     }
@@ -222,7 +237,120 @@ async def get_me(user: dict = Depends(get_current_user)):
         "email": user["email"],
         "name": user["name"],
         "phone": user.get("phone"),
+        "address": user.get("address"),
+        "city": user.get("city"),
+        "postal_code": user.get("postal_code"),
+        "property_type": user.get("property_type"),
+        "bedrooms": user.get("bedrooms"),
+        "bathrooms": user.get("bathrooms"),
         "role": user.get("role", "user")
+    }
+
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str
+
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(data: ForgotPasswordRequest):
+    """Request a password reset. Generates token and logs reset link."""
+    user = await db.users.find_one({"email": data.email}, {"_id": 0})
+    
+    if user:
+        # Generate reset token
+        reset_token = str(uuid.uuid4())
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
+        
+        # Store reset token in database
+        await db.password_resets.delete_many({"email": data.email})  # Remove old tokens
+        await db.password_resets.insert_one({
+            "email": data.email,
+            "token": reset_token,
+            "expires_at": expires_at.isoformat(),
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Log the reset link (in production, this would be sent via email)
+        host_url = os.getenv("HOST_URL", "http://localhost:8000")
+        frontend_url = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")[0]
+        reset_link = f"{frontend_url}/reset-password?token={reset_token}"
+        print(f"\n=== PASSWORD RESET LINK ===")
+        print(f"Email: {data.email}")
+        print(f"Reset Link: {reset_link}")
+        print(f"Token expires in 1 hour")
+        print(f"===========================\n")
+    
+    # Always return success to prevent email enumeration
+    return {"message": "If an account with that email exists, a password reset link has been sent."}
+
+
+@api_router.post("/auth/reset-password")
+async def reset_password(data: ResetPasswordRequest):
+    """Reset password using token from email."""
+    # Find the reset token
+    reset_record = await db.password_resets.find_one({"token": data.token})
+    
+    if not reset_record:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    # Check if token is expired
+    expires_at = datetime.fromisoformat(reset_record["expires_at"].replace("Z", "+00:00"))
+    if datetime.now(timezone.utc) > expires_at:
+        await db.password_resets.delete_one({"token": data.token})
+        raise HTTPException(status_code=400, detail="Reset token has expired")
+    
+    # Update user's password
+    new_password_hash = hash_password(data.new_password)
+    await db.users.update_one(
+        {"email": reset_record["email"]},
+        {"$set": {"password": new_password_hash, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    # Delete the used token
+    await db.password_resets.delete_one({"token": data.token})
+    
+    return {"message": "Password has been reset successfully"}
+
+
+class UserProfileUpdate(BaseModel):
+    property_type: Optional[str] = None
+    bedrooms: Optional[int] = None
+    bathrooms: Optional[int] = None
+
+
+@api_router.put("/users/profile", response_model=dict)
+async def update_profile(profile_data: UserProfileUpdate, user: dict = Depends(get_current_user)):
+    """Update user profile with property details."""
+    update_fields = {}
+    if profile_data.property_type is not None:
+        update_fields["property_type"] = profile_data.property_type
+    if profile_data.bedrooms is not None:
+        update_fields["bedrooms"] = profile_data.bedrooms
+    if profile_data.bathrooms is not None:
+        update_fields["bathrooms"] = profile_data.bathrooms
+    
+    if update_fields:
+        await db.users.update_one({"id": user["id"]}, {"$set": update_fields})
+    
+    # Return updated user
+    updated_user = await db.users.find_one({"id": user["id"]}, {"_id": 0})
+    return {
+        "id": updated_user["id"],
+        "email": updated_user["email"],
+        "name": updated_user["name"],
+        "phone": updated_user.get("phone"),
+        "address": updated_user.get("address"),
+        "city": updated_user.get("city"),
+        "postal_code": updated_user.get("postal_code"),
+        "property_type": updated_user.get("property_type"),
+        "bedrooms": updated_user.get("bedrooms"),
+        "bathrooms": updated_user.get("bathrooms"),
+        "role": updated_user.get("role", "user")
     }
 
 # ==================== SERVICES ROUTES ====================
@@ -349,11 +477,67 @@ async def cancel_booking(booking_id: str, user: dict = Depends(get_current_user)
     if booking["status"] in ["completed", "cancelled"]:
         raise HTTPException(status_code=400, detail="Cannot cancel this booking")
     
+    # Check 30-minute rule (only for non-admin users)
+    if user.get("role") != "admin":
+        scheduled_datetime_str = f"{booking['scheduled_date']} {booking['scheduled_time']}"
+        try:
+            scheduled_dt = datetime.strptime(scheduled_datetime_str, "%Y-%m-%d %H:%M")
+        except ValueError:
+            scheduled_dt = datetime.strptime(scheduled_datetime_str, "%Y-%m-%d %I:%M %p")
+        scheduled_dt = scheduled_dt.replace(tzinfo=timezone.utc)
+        now = datetime.now(timezone.utc)
+        time_until_booking = (scheduled_dt - now).total_seconds() / 60  # minutes
+        
+        if time_until_booking < 30:
+            raise HTTPException(status_code=400, detail="Cannot cancel within 30 minutes of scheduled time")
+    
     await db.bookings.update_one(
         {"id": booking_id},
         {"$set": {"status": "cancelled", "updated_at": datetime.now(timezone.utc).isoformat()}}
     )
     return {"message": "Booking cancelled"}
+
+
+class RescheduleRequest(BaseModel):
+    scheduled_date: str
+    scheduled_time: str
+
+
+@api_router.put("/bookings/{booking_id}/reschedule")
+async def reschedule_booking(booking_id: str, data: RescheduleRequest, user: dict = Depends(get_current_user)):
+    booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+    if booking["user_id"] != user["id"] and user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Access denied")
+    if booking["status"] in ["completed", "cancelled"]:
+        raise HTTPException(status_code=400, detail="Cannot reschedule this booking")
+    
+    # Check 30-minute rule (only for non-admin users)
+    if user.get("role") != "admin":
+        scheduled_datetime_str = f"{booking['scheduled_date']} {booking['scheduled_time']}"
+        try:
+            scheduled_dt = datetime.strptime(scheduled_datetime_str, "%Y-%m-%d %H:%M")
+        except ValueError:
+            scheduled_dt = datetime.strptime(scheduled_datetime_str, "%Y-%m-%d %I:%M %p")
+        scheduled_dt = scheduled_dt.replace(tzinfo=timezone.utc)
+        now = datetime.now(timezone.utc)
+        time_until_booking = (scheduled_dt - now).total_seconds() / 60  # minutes
+        
+        if time_until_booking < 30:
+            raise HTTPException(status_code=400, detail="Cannot reschedule within 30 minutes of scheduled time")
+    
+    await db.bookings.update_one(
+        {"id": booking_id},
+        {"$set": {
+            "scheduled_date": data.scheduled_date,
+            "scheduled_time": data.scheduled_time,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    updated_booking = await db.bookings.find_one({"id": booking_id}, {"_id": 0})
+    return updated_booking
 
 # ==================== ADMIN BOOKING ROUTES ====================
 

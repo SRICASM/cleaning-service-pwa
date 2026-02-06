@@ -7,8 +7,9 @@ import { toast } from 'sonner';
 import {
   Calendar, Zap, ChevronRight, ChevronDown, Gift, Wallet, User,
   Star, Shield, IdCard, Users, Sparkles, MapPin, Clock, Check,
-  Home, Droplets, Shirt, UtensilsCrossed, Package, Moon
+  Home, Droplets, Shirt, UtensilsCrossed, Package, Moon, X, CheckCircle
 } from 'lucide-react';
+import AddressFlowManager from '../components/address/AddressFlowManager';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -215,22 +216,22 @@ const BookingFlexibility = ({ onSelectMethod }) => {
         <p className="text-gray-500 mt-2">Choose how you want to book your professional cleaner</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6 max-w-4xl mx-auto">
         {/* Card 1: By House Size */}
         <button
           onClick={() => onSelectMethod('size')}
-          className="group relative overflow-hidden bg-gradient-to-br from-emerald-500 to-green-600 rounded-3xl p-6 text-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-emerald-200 hover:-translate-y-1 hover:scale-[1.02] animate-in slide-in-from-bottom-8 duration-700 fade-in fill-mode-both delay-100"
+          className="group relative overflow-hidden bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl md:rounded-3xl p-4 md:p-6 text-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-emerald-200 hover:-translate-y-1 hover:scale-[1.02] animate-in slide-in-from-bottom-8 duration-700 fade-in fill-mode-both delay-100"
         >
           {/* Shine Effect */}
           <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300" />
 
-          <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-              <Home className="w-6 h-6 text-white group-hover:animate-pulse" />
+          <div className="relative z-10 flex flex-col h-full justify-between min-h-[120px] md:min-h-[140px]">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl md:rounded-2xl flex items-center justify-center backdrop-blur-sm mb-3 md:mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+              <Home className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:animate-pulse" />
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-1 group-hover:tracking-wide transition-all duration-300">By House Size</h3>
-              <p className="text-emerald-50 text-sm font-medium opacity-90 group-hover:opacity-100 transition-opacity">
+              <h3 className="text-lg md:text-xl font-bold mb-1 group-hover:tracking-wide transition-all duration-300 leading-tight">By House Size</h3>
+              <p className="text-emerald-50 text-xs md:text-sm font-medium opacity-90 group-hover:opacity-100 transition-opacity leading-snug">
                 Flat rates for Studios, Apartments & Villas
               </p>
             </div>
@@ -246,19 +247,19 @@ const BookingFlexibility = ({ onSelectMethod }) => {
         {/* Card 2: By Hourly Rate */}
         <button
           onClick={() => onSelectMethod('hourly')}
-          className="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl p-6 text-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-blue-200 hover:-translate-y-1 hover:scale-[1.02] animate-in slide-in-from-bottom-8 duration-700 fade-in fill-mode-both delay-200"
+          className="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl md:rounded-3xl p-3 md:p-5 text-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-blue-200 hover:-translate-y-1 hover:scale-[1.02] animate-in slide-in-from-bottom-8 duration-700 fade-in fill-mode-both delay-200"
         >
           {/* Shine Effect */}
           <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300" />
 
-          <div className="relative z-10 flex flex-col h-full justify-between min-h-[140px]">
-            <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm mb-4 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
-              <Clock className="w-6 h-6 text-white group-hover:animate-spin-slow" style={{ animationDuration: '3s' }} />
+          <div className="relative z-10 flex flex-col h-full justify-between min-h-[120px] md:min-h-[140px]">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl md:rounded-2xl flex items-center justify-center backdrop-blur-sm mb-3 md:mb-4 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
+              <Clock className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:animate-spin-slow" style={{ animationDuration: '3s' }} />
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-1 group-hover:tracking-wide transition-all duration-300">By Hourly Rate</h3>
-              <p className="text-blue-50 text-sm font-medium opacity-90 group-hover:opacity-100 transition-opacity">
-                You decide the duration. Flexible scheduling.
+              <h3 className="text-base md:text-xl font-bold mb-1 group-hover:tracking-wide transition-all duration-300 leading-tight">By Hourly Rate</h3>
+              <p className="text-blue-50 text-xs md:text-sm font-medium opacity-90 group-hover:opacity-100 transition-opacity leading-snug">
+                Flexible booking for customized cleaning
               </p>
             </div>
           </div>
@@ -384,62 +385,124 @@ const TrustIndicators = () => {
   );
 };
 
-// Sticky Bottom Promo Banner
-const StickyPromoBanner = ({ onClaim, visible }) => {
-  const [minimized, setMinimized] = useState(false);
-
+// Center Screen Popup Modal for Starter Pack
+const StarterPackModal = ({ onClaim, visible, onClose }) => {
   if (!visible) return null;
 
-  if (minimized) {
-    return (
-      <button
-        onClick={() => setMinimized(false)}
-        className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 py-3 px-4 flex items-center justify-center gap-2 shadow-lg safe-area-bottom"
-      >
-        <Sparkles className="w-4 h-4 text-emerald-500" />
-        <span className="text-sm font-medium text-gray-900">View Starter Pack Offer</span>
-        <ChevronRight className="w-4 h-4 text-gray-500" />
-      </button>
-    );
-  }
-
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-100 shadow-[0_-4px_30px_rgba(0,0,0,0.08)] safe-area-bottom">
-      {/* Dismiss handle */}
-      <button
-        onClick={() => setMinimized(true)}
-        className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-1.5 bg-gray-200/80 rounded-full hover:bg-gray-300 transition-colors backdrop-blur-sm"
-        aria-label="Minimize offer"
+    <>
+      {/* Backdrop */}
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 animate-in fade-in duration-200"
+        onClick={onClose}
       />
 
-      <div className="px-4 py-4 flex items-center gap-4 max-w-md mx-auto">
-        {/* Promo Badge */}
-        <div className="w-16 h-16 bg-emerald-50 rounded-xl flex flex-col items-center justify-center border border-emerald-100 flex-shrink-0">
-          <span className="text-xs text-gray-400 line-through decoration-red-400">AED 507</span>
-          <span className="text-xl font-bold text-emerald-600">149</span>
-          <span className="text-[9px] font-bold text-emerald-600 uppercase">AED</span>
-        </div>
+      {/* Modal */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+        <div
+          className="bg-white rounded-3xl shadow-2xl max-w-sm w-full pointer-events-auto animate-in zoom-in-95 duration-300"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close Button */}
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            aria-label="Close"
+          >
+            <X className="w-4 h-4 text-gray-600" />
+          </button>
 
-        {/* Offer Details */}
-        <div className="flex-1 min-w-0">
-          <h4 className="text-sm font-bold text-gray-900">Starter Pack</h4>
-          <p className="text-xs text-gray-500 mt-0.5 line-clamp-1">
-            3 Visits • 60 Mins Each
-          </p>
-          <div className="text-[10px] font-medium text-emerald-600 mt-1 bg-emerald-50 inline-block px-1.5 py-0.5 rounded">
-            Save AED 358
+          {/* Header with Sparkles */}
+          <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-t-3xl px-6 pt-6 pb-8 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/2" />
+
+            <div className="relative">
+              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-3">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-1">Welcome Offer!</h3>
+              <p className="text-emerald-50 text-sm">Limited time starter pack deal</p>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="px-6 py-6">
+            {/* Price Badge */}
+            <div className="bg-emerald-50 rounded-2xl p-4 mb-4 border border-emerald-100">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm text-gray-600">Regular Price</span>
+                <span className="text-lg text-gray-400 line-through decoration-red-400">AED 507</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-gray-900">Special Price</span>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-3xl font-bold text-emerald-600">149</span>
+                  <span className="text-sm font-semibold text-emerald-600">AED</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Package Details */}
+            <div className="space-y-3 mb-6">
+              <h4 className="font-bold text-gray-900">Starter Pack Includes:</h4>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">3 Cleaning Visits</p>
+                  <p className="text-xs text-gray-500">60 minutes each session</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Professional Cleaners</p>
+                  <p className="text-xs text-gray-500">Vetted & trained staff</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <CheckCircle className="w-4 h-4 text-emerald-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Flexible Scheduling</p>
+                  <p className="text-xs text-gray-500">Use within 90 days</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Savings Badge */}
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-6 flex items-center justify-center gap-2">
+              <Star className="w-4 h-4 text-amber-600 fill-amber-600" />
+              <span className="text-sm font-bold text-amber-900">Save AED 358 (71% OFF)</span>
+            </div>
+
+            {/* CTA Button */}
+            <button
+              onClick={() => {
+                onClaim();
+                onClose();
+              }}
+              className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-6 py-4 rounded-xl font-bold text-base hover:from-emerald-700 hover:to-emerald-800 active:scale-[0.98] transition-all shadow-lg shadow-emerald-200"
+            >
+              Claim Starter Pack
+            </button>
+
+            {/* Footer Note */}
+            <p className="text-center text-xs text-gray-400 mt-4">
+              🎉 New customers only • Offer expires soon
+            </p>
           </div>
         </div>
-
-        {/* CTA Button */}
-        <button
-          onClick={onClaim}
-          className="bg-gray-900 text-white px-5 py-3 rounded-xl font-bold text-sm hover:bg-gray-800 active:scale-[0.98] transition-all flex-shrink-0 shadow-lg shadow-gray-200"
-        >
-          Claim
-        </button>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -448,13 +511,19 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
   // Use cart context to hide promo banner if cart is active
-  const { cartCount } = useCart(); // Assuming useCart exposes cartCount, which it does based on StickyCart.jsx
+  const { cartCount } = useCart();
 
   const [scrolled, setScrolled] = useState(false);
-  const [expertsAvailable, setExpertsAvailable] = useState(false); // Default to false to prevent flash
+  const [quickBooking, setQuickBooking] = useState(null);
+  const [expertsAvailable, setExpertsAvailable] = useState(true);
+  const [addressFlowOpen, setAddressFlowOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null); // Default to false to prevent flash
   const [services, setServices] = useState([]);
+
   const [userAddress, setUserAddress] = useState('');
   const [showPromoBanner, setShowPromoBanner] = useState(true);
+  const [showStarterPackModal, setShowStarterPackModal] = useState(false);
+  const [hasBookings, setHasBookings] = useState(null); // null = loading, true/false = result
 
   // ... (keeping existing scroll effect)
 
@@ -465,6 +534,48 @@ const HomePage = () => {
     const availabilityInterval = setInterval(checkAvailability, 60000);
     return () => clearInterval(availabilityInterval);
   }, []);
+
+  // Check if user has any bookings
+  useEffect(() => {
+    const checkUserBookings = async () => {
+      if (!user || !token) {
+        setHasBookings(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API}/bookings/user`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.ok) {
+          const bookings = await response.json();
+          setHasBookings(bookings && bookings.length > 0);
+        } else {
+          setHasBookings(false);
+        }
+      } catch (error) {
+        console.error('Error checking bookings:', error);
+        setHasBookings(false);
+      }
+    };
+
+    checkUserBookings();
+  }, [user, token]);
+
+  // Auto-show starter pack modal after 2 seconds (only for new users without bookings)
+  useEffect(() => {
+    // Only show if user is logged in and has no bookings
+    if (hasBookings === false && user) {
+      const timer = setTimeout(() => {
+        setShowStarterPackModal(true);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [hasBookings, user]);
 
   // ... (keeping existing address fetch)
 
@@ -501,12 +612,12 @@ const HomePage = () => {
 
   const handleServiceClick = (service) => {
     // Navigate to schedule booking with service pre-selected
-    navigate('/schedule-booking', { state: { serviceId: service.id } });
+    navigate('/schedule-booking-new', { state: { serviceId: service.id } });
   };
 
   const handleBookingMethodClick = (method) => {
     // Navigate to schedule booking with specific method (size or hourly)
-    navigate('/schedule-booking', { state: { bookingMethod: method } });
+    navigate('/schedule-booking-new', { state: { bookingMethod: method } });
   };
 
   const handleCashbackClick = () => {
@@ -527,7 +638,11 @@ const HomePage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <Navbar transparent={!scrolled} />
+      <Navbar
+        transparent={!scrolled}
+        selectedAddress={selectedAddress}
+        onAddressClick={() => setAddressFlowOpen(true)}
+      />
 
       <main>
         <HeroSection expertsAvailable={expertsAvailable} />
@@ -546,9 +661,10 @@ const HomePage = () => {
         <TrustIndicators />
       </main>
 
-      <StickyPromoBanner
+      <StarterPackModal
         onClaim={handleClaimStarterPack}
-        visible={shouldShowPromo}
+        visible={showStarterPackModal}
+        onClose={() => setShowStarterPackModal(false)}
       />
 
       {/* Add floating animation keyframes */}
@@ -577,8 +693,19 @@ const HomePage = () => {
           animation: blink 1s step-end infinite;
         }
       `}</style>
+
+      {/* Address Flow Manager */}
+      <AddressFlowManager
+        open={addressFlowOpen}
+        onClose={() => setAddressFlowOpen(false)}
+        onAddressSelected={(addr) => {
+          setSelectedAddress(addr);
+          setAddressFlowOpen(false);
+        }}
+      />
     </div>
   );
 };
 
 export default HomePage;
+

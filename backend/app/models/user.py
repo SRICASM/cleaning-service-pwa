@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum as SQLEnum, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Enum as SQLEnum, Text, ForeignKey, Numeric
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.database import Base
@@ -86,6 +86,16 @@ class Address(Base):
     
     # Flags
     is_default = Column(Boolean, default=False)
+    
+    # GPS Coordinates
+    latitude = Column(Numeric(10, 8), nullable=True)
+    longitude = Column(Numeric(11, 8), nullable=True)
+    
+    # Home Attributes
+    house_size = Column(String(50), nullable=True)  # "1 BHK", "2 BHK", etc.
+    washrooms_count = Column(Integer, nullable=True)
+    residents_count = Column(Integer, nullable=True)
+    pet_type = Column(String(50), nullable=True)  # "No pets", "Cat", "Dog"
     
     # Access instructions
     access_instructions = Column(Text, nullable=True)

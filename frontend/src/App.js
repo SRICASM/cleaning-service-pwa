@@ -26,7 +26,7 @@ import SubscriptionPlansPage from "./pages/SubscriptionPlansPage";
 import SubscriptionCheckoutPage from "./pages/SubscriptionCheckoutPage";
 import SubscriptionManagePage from "./pages/SubscriptionManagePage";
 import InstantBookingPage from "./pages/InstantBookingPage";
-import ScheduleBookingPage from "./pages/ScheduleBookingPage";
+import ScheduleBookingPageRedesigned from "./pages/ScheduleBookingPageRedesigned";
 import WalletPage from "./pages/WalletPage";
 import ReferralPage from "./pages/ReferralPage";
 import UpdateNotification from "./components/UpdateNotification";
@@ -124,9 +124,13 @@ function AppRoutes() {
       />
       <Route
         path="/schedule-booking"
+        element={<Navigate to="/schedule-booking-new" replace />}
+      />
+      <Route
+        path="/schedule-booking-new"
         element={
           <ProtectedRoute>
-            <ScheduleBookingPage />
+            <ScheduleBookingPageRedesigned />
           </ProtectedRoute>
         }
       />

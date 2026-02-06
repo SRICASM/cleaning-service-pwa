@@ -122,6 +122,12 @@ class AddressBase(BaseModel):
     bedrooms: Optional[int] = None
     bathrooms: Optional[int] = None
     access_instructions: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    house_size: Optional[str] = None
+    washrooms_count: Optional[int] = None
+    residents_count: Optional[int] = None
+    pet_type: Optional[str] = None
     is_default: bool = False
 
 
@@ -141,6 +147,12 @@ class AddressUpdate(BaseModel):
     bedrooms: Optional[int] = None
     bathrooms: Optional[int] = None
     access_instructions: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
+    house_size: Optional[str] = None
+    washrooms_count: Optional[int] = None
+    residents_count: Optional[int] = None
+    pet_type: Optional[str] = None
     is_default: Optional[bool] = None
 
 

@@ -10,11 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu';
-import { Menu, X, User, LogOut, LayoutDashboard, Calendar, Sparkles, Settings, Wallet, Gift, ChevronDown, MapPin } from 'lucide-react';
+import { Menu, X, User, LogOut, LayoutDashboard, Calendar, Sparkles, Settings, Wallet, Gift, ChevronDown, ChevronRight, MapPin, HelpCircle } from 'lucide-react';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
-const Navbar = ({ transparent = false }) => {
+const Navbar = ({ transparent = false, selectedAddress, onAddressClick }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, token, logout } = useAuth();
   const navigate = useNavigate();
@@ -78,23 +78,22 @@ const Navbar = ({ transparent = false }) => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 
-          {/* LEFT: Location Selector (Mobile/Desktop) or Logo if not logged in */}
+          {/* LEFT: Address Header (triggers address flow) or Logo if not logged in */}
           {user ? (
             <button
-              onClick={() => navigate('/profile', { state: { openAddresses: true } })}
+              onClick={onAddressClick}
               className="flex items-center gap-2 group text-left"
             >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isTransparent ? 'bg-white/20' : 'bg-stone-100'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isTransparent ? 'bg-white/20' : 'bg-emerald-50'}`}>
                 <MapPin className={`w-4 h-4 ${isTransparent ? 'text-white' : 'text-emerald-600'}`} />
               </div>
               <div>
                 <div className={`flex items-center gap-1 font-semibold text-sm md:text-base ${textColorClass}`}>
-                  <span className="hidden md:inline">Current Location</span>
-                  <span className="md:hidden">Home</span>
+                  <span>{selectedAddress?.label || 'Home'}</span>
                   <ChevronDown className="w-4 h-4" />
                 </div>
                 <p className={`text-xs truncate max-w-[150px] md:max-w-[250px] ${subTextColorClass}`}>
-                  {userAddress || 'Select Address'}
+                  {selectedAddress?.address || 'Select your location'}
                 </p>
               </div>
             </button>
@@ -169,10 +168,6 @@ const Navbar = ({ transparent = false }) => {
                       <Settings className="w-4 h-4 mr-2" />
                       Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/booking')} className="rounded-lg cursor-pointer font-semibold text-emerald-600">
-                      <Calendar className="w-4 h-4 mr-2" />
-                      Book Service
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={handleLogout} className="rounded-lg cursor-pointer text-red-600 focus:text-red-700 focus:bg-red-50">
                       <LogOut className="w-4 h-4 mr-2" />
@@ -199,92 +194,158 @@ const Navbar = ({ transparent = false }) => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className={`md:hidden p-2 rounded-lg ${isTransparent ? 'text-white hover:bg-white/20' : 'text-stone-900 hover:bg-stone-100'}`}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Floating Icons (Wallet, Referral, Profile/Menu) */}
+          <div className="md:hidden flex items-center gap-2">
+            {/* Wallet Button */}
+            <button
+              onClick={() => user ? navigate('/wallet') : navigate('/login')}
+              className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors shadow-sm border border-pink-100"
+            >
+              <Wallet className="w-5 h-5" />
+            </button>
+
+            {/* Referral Button */}
+            <button
+              onClick={() => user ? navigate('/referrals') : navigate('/login')}
+              className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 hover:bg-emerald-100 transition-colors shadow-sm border border-emerald-100"
+            >
+              <Gift className="w-5 h-5" />
+            </button>
+
+            {/* Profile/Menu Toggle Button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-stone-600 hover:bg-stone-200 transition-colors shadow-sm overflow-hidden border border-stone-200"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5" />
+              ) : user ? (
+                <div className="w-full h-full bg-emerald-600 flex items-center justify-center text-white font-bold text-sm">
+                  {user.name.charAt(0)}
+                </div>
+              ) : (
+                <User className="w-5 h-5" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-white border-t border-stone-200 animate-fadeIn h-screen absolute top-16 left-0 right-0 p-4">
+        <div className="md:hidden bg-white border-t border-stone-200 animate-fadeIn h-screen absolute top-16 left-0 right-0 p-4 overflow-y-auto">
           {user && (
-            <div className="mb-6 p-4 bg-stone-50 rounded-2xl flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xl">
-                {user.name.charAt(0)}
+            <>
+              {/* Large Avatar Header - Clickable */}
+              <div className="text-center mb-6">
+                <div className="w-24 h-24 mx-auto mb-3 rounded-full bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
+                  {user.name.charAt(0)}
+                </div>
+                <div className="flex items-center justify-center gap-2">
+                  <h2 className="text-xl font-bold text-stone-900">
+                    {user.name}
+                  </h2>
+                  <ChevronDown className="w-5 h-5 text-stone-400" />
+                </div>
+                <p className="text-sm text-stone-500 mt-1">{user.email}</p>
+                {user.phone && (
+                  <p className="text-sm text-stone-500">{user.phone}</p>
+                )}
               </div>
-              <div>
-                <p className="font-bold text-lg text-stone-900">{user.name}</p>
-                <p className="text-sm text-stone-500">{user.email}</p>
+
+              {/* Referral Banner */}
+              <Link
+                to="/referrals"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block w-full bg-gradient-to-r from-emerald-50 to-green-50 rounded-2xl p-4 border border-emerald-200 hover:shadow-md transition-all mb-6"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                    <Gift className="w-6 h-6 text-emerald-600" />
+                  </div>
+                  <div className="flex-1 text-left">
+                    <h3 className="font-bold text-stone-900">Earn AED 50</h3>
+                    <p className="text-sm text-stone-600">Refer your friends and earn now</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-stone-400 flex-shrink-0" />
+                </div>
+              </Link>
+
+              {/* Quick Access Grid - 2x3 (Bookings, Wallet, Support) */}
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {/* My Bookings */}
+                <Link
+                  to="/dashboard"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="relative bg-white rounded-2xl p-4 border border-stone-200 hover:shadow-md hover:border-stone-300 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-pink-100 flex items-center justify-center mb-3">
+                    <Calendar className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <h3 className="font-semibold text-stone-900 mb-1">My Bookings</h3>
+                  <p className="text-xs text-stone-500">View all bookings</p>
+                  <ChevronRight className="w-4 h-4 text-stone-400 absolute top-4 right-4" />
+                </Link>
+
+                {/* My Wallet */}
+                <Link
+                  to="/wallet"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="relative bg-white rounded-2xl p-4 border border-stone-200 hover:shadow-md hover:border-stone-300 transition-all active:scale-[0.98]"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center mb-3">
+                    <Wallet className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <h3 className="font-semibold text-stone-900 mb-1">My Wallet</h3>
+                  <p className="text-xs text-stone-500">Check balance</p>
+                  <ChevronRight className="w-4 h-4 text-stone-400 absolute top-4 right-4" />
+                </Link>
+
+                {/* Help & Support */}
+                <Link
+                  to="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="relative bg-white rounded-2xl p-4 border border-stone-200 hover:shadow-md hover:border-stone-300 transition-all active:scale-[0.98] col-span-2"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                      <HelpCircle className="w-6 h-6 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-stone-900">Help & Support</h3>
+                      <p className="text-xs text-stone-500">Get quick help</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-stone-400 flex-shrink-0" />
+                  </div>
+                </Link>
               </div>
-            </div>
+
+              {/* Logout Button */}
+              <Button
+                variant="ghost"
+                className="w-full justify-start text-red-600 h-12 hover:bg-red-50"
+                onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+              >
+                <LogOut className="w-5 h-5 mr-3" />
+                Logout
+              </Button>
+            </>
           )}
 
-          <div className="space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                className="block py-3 px-4 rounded-xl font-medium text-stone-600 hover:bg-stone-50 hover:text-green-900 transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
-
-            <div className="my-4 border-t border-stone-100" />
-
-            {user ? (
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/wallet" onClick={() => setMobileMenuOpen(false)} className="col-span-1 p-3 bg-stone-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-pink-50 transition-colors group">
-                  <Wallet className="w-6 h-6 text-pink-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-medium text-stone-700">Wallet</span>
-                </Link>
-                <Link to="/referrals" onClick={() => setMobileMenuOpen(false)} className="col-span-1 p-3 bg-stone-50 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-green-50 transition-colors group">
-                  <Gift className="w-6 h-6 text-green-500 group-hover:scale-110 transition-transform" />
-                  <span className="text-xs font-medium text-stone-700">Refer & Earn</span>
-                </Link>
-
-                <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="col-span-2">
-                  <Button variant="outline" className="w-full justify-start h-12 text-base">
-                    <LayoutDashboard className="w-5 h-5 mr-3" />
-                    Dashboard
-                  </Button>
-                </Link>
-                <Link to="/booking" onClick={() => setMobileMenuOpen(false)} className="col-span-2">
-                  <Button className="w-full bg-lime-500 hover:bg-lime-600 h-12 text-base text-lg font-bold shadow-lg shadow-lime-200">
-                    <Calendar className="w-5 h-5 mr-3" />
-                    Book Now
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  className="col-span-2 w-full justify-start text-red-600 h-12"
-                  onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
-                >
-                  <LogOut className="w-5 h-5 mr-3" />
-                  Logout
+          {/* Not Logged In State */}
+          {!user && (
+            <div className="space-y-3">
+              <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+                <Button variant="outline" className="w-full h-12 text-base">
+                  Sign In
                 </Button>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
-                  <Button variant="outline" className="w-full h-12 text-base">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
-                  <Button className="w-full bg-green-900 hover:bg-green-800 h-12 text-base">
-                    Get Started
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </div>
+              </Link>
+              <Link to="/register" onClick={() => setMobileMenuOpen(false)}>
+                <Button className="w-full bg-green-900 hover:bg-green-800 h-12 text-base">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </nav>

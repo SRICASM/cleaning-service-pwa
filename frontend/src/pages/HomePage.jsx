@@ -165,14 +165,13 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
   ];
 
   // Helper to merge defaults with fetched services
-  // If "Office Cleaning" isn't in fetched services, we append the default one
   const displayItems = [...defaults];
 
   return (
     <div className="relative -mt-24 px-4 z-20 pb-10">
       <div className="max-w-4xl mx-auto">
-        {/* Glassmorphism container */}
-        <div className="bg-white rounded-3xl p-4 shadow-xl border border-gray-100/50 backdrop-blur-sm">
+        {/* Glassmorphism container - Frosted Glass Effect */}
+        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/40 ring-1 ring-black/5">
           <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
             {displayItems.map((service) => {
               const Icon = service.icon;
@@ -180,16 +179,16 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
                 <button
                   key={service.id}
                   onClick={() => onServiceClick(service)}
-                  className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white border-2 border-transparent hover:border-emerald-100 hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all duration-200 group text-center"
+                  className="relative overflow-hidden flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white/50 hover:bg-white border border-white/60 hover:border-emerald-100 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all duration-200 group text-center backdrop-blur-sm"
                 >
-                  <div className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                  <div className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
                     <Icon className={`w-6 h-6 ${service.iconColor}`} />
                   </div>
                   <div>
                     <h3 className="font-bold text-gray-900 text-sm md:text-base group-hover:text-emerald-700 transition-colors">
                       {service.name}
                     </h3>
-                    <p className="text-xs text-gray-500 font-medium mt-1">
+                    <p className="text-xs text-gray-500 font-medium mt-1 group-hover:text-gray-600">
                       {service.description}
                     </p>
                   </div>
@@ -203,7 +202,7 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
   );
 };
 
-// Booking Flexibility Component (Restyled to match Service Cards)
+// Booking Flexibility Component (Vibrant Glassmorphic Cards)
 const BookingFlexibility = ({ onSelectMethod }) => {
   return (
     <section className="px-6 pb-12 max-w-7xl mx-auto">
@@ -213,37 +212,49 @@ const BookingFlexibility = ({ onSelectMethod }) => {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-2 gap-4 max-w-4xl mx-auto px-4 md:px-0">
-        {/* Card 1: By House Size */}
+        {/* Card 1: By House Size (Emerald Gradient) */}
         <button
           onClick={() => onSelectMethod('size')}
-          className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white border-2 border-transparent shadow-sm hover:border-emerald-100 hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all duration-200 group text-center"
+          className="relative overflow-hidden group flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/40 text-center"
         >
-          <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Home className="w-7 h-7 text-emerald-600" />
+          {/* Glass Overlay */}
+          <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 backdrop-blur-[1px]" />
+
+          {/* Shine Effect */}
+          <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+
+          <div className="relative z-10 w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
+            <Home className="w-7 h-7 text-white drop-shadow-sm" />
           </div>
-          <div>
-            <h3 className="font-bold text-gray-900 text-base md:text-lg group-hover:text-emerald-700 transition-colors">
+          <div className="relative z-10">
+            <h3 className="font-bold text-white text-base md:text-lg drop-shadow-sm">
               By House Size
             </h3>
-            <p className="text-xs text-emerald-600/80 font-medium mt-1">
+            <p className="text-xs text-emerald-100 font-medium mt-1">
               Flat rates for any home
             </p>
           </div>
         </button>
 
-        {/* Card 2: By Hourly Rate */}
+        {/* Card 2: By Hourly Rate (Blue Gradient) */}
         <button
           onClick={() => onSelectMethod('hourly')}
-          className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white border-2 border-transparent shadow-sm hover:border-blue-100 hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] transition-all duration-200 group text-center"
+          className="relative overflow-hidden group flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/40 text-center"
         >
-          <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-            <Clock className="w-7 h-7 text-blue-600" />
+          {/* Glass Overlay */}
+          <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 backdrop-blur-[1px]" />
+
+          {/* Shine Effect */}
+          <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+
+          <div className="relative z-10 w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
+            <Clock className="w-7 h-7 text-white drop-shadow-sm" />
           </div>
-          <div>
-            <h3 className="font-bold text-gray-900 text-base md:text-lg group-hover:text-blue-700 transition-colors">
+          <div className="relative z-10">
+            <h3 className="font-bold text-white text-base md:text-lg drop-shadow-sm">
               By Hourly Rate
             </h3>
-            <p className="text-xs text-blue-600/80 font-medium mt-1">
+            <p className="text-xs text-blue-100 font-medium mt-1">
               Flexible time-based booking
             </p>
           </div>

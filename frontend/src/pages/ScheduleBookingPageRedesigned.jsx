@@ -4,8 +4,12 @@ import { useAuth } from '../context/AuthContext';
 
 import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { BookingTypeToggle } from '../components/booking/BookingTypeToggle';
+import { ServiceTypeToggle } from '../components/booking/ServiceTypeToggle';
+import { SizeDurationToggle } from '../components/booking/SizeDurationToggle';
+import { PaymentModeToggle } from '../components/booking/PaymentModeToggle';
 // HouseSizeCards is now inline with multiplier support
-import { DatePickerHorizontal } from '../components/booking/DatePickerHorizontal';
+import { DayPickerHorizontal } from '../components/booking/DayPickerHorizontal';
+import { FullMonthCalendar } from '../components/booking/FullMonthCalendar';
 import { TimeSlotPicker } from '../components/booking/TimeSlotPickerNew';
 import { StickyBookingCTA, useStickyScroll } from '../components/booking/StickyBookingCTA';
 import { useCollapsibleSections } from '../hooks/useCollapsibleSections';
@@ -26,7 +30,7 @@ import {
     CheckCircle,
     Check,
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { format, isSameDay, startOfMonth, endOfMonth, addDays, addMonths, getDay } from 'date-fns';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -389,13 +393,16 @@ const ScheduleBookingPageRedesigned = () => {
     const { showSticky } = useStickyScroll(0.5);
 
     // Booking state
-    const [bookingType, setBookingType] = useState('schedule');
+    const [bookingType, setBookingType] = useState('instant');
     const [pricingMode, setPricingMode] = useState('size');
     const [selectedSize, setSelectedSize] = useState(null);
     const [sizePrice, setSizePrice] = useState(0);
     const [selectedHours, setSelectedHours] = useState(null);
     const [hourlyPrice, setHourlyPrice] = useState(0);
     const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedDates, setSelectedDates] = useState([]); // Multi-date selection
+    const [selectedWeekdays, setSelectedWeekdays] = useState([]); // Recurring weekdays
+    const [currentMonth, setCurrentMonth] = useState(new Date()); // Calendar month
     const [selectedTime, setSelectedTime] = useState(null);
     const [selectedPeriod, setSelectedPeriod] = useState('morning');
     const [paymentMode, setPaymentMode] = useState('now');
@@ -417,13 +424,16 @@ const ScheduleBookingPageRedesigned = () => {
         }
     }, [user, navigate]);
 
-    // Set pricing mode from navigation state (when clicking from home page)
+    // Set state from navigation (pricing mode & booking type)
     useEffect(() => {
-        const stateBookingMethod = location.state?.bookingMethod;
-        if (stateBookingMethod === 'hourly') {
-            setPricingMode('hourly');
-        } else if (stateBookingMethod === 'size') {
-            setPricingMode('size');
+        if (location.state?.bookingMethod) {
+            setPricingMode(location.state.bookingMethod);
+        }
+
+        if (location.state?.bookingType === 'instant') {
+            setBookingType('instant');
+            setSelectedTime('ASAP');
+            setSelectedDate(new Date());
         }
     }, [location.state]);
 
@@ -503,16 +513,102 @@ const ScheduleBookingPageRedesigned = () => {
     // Handle time selection
     const handleTimeSelect = (time) => {
         setSelectedTime(time);
-        if (selectedDate) {
+        if (selectedDates.length > 0 || selectedDate) {
             sections.markComplete('datetime', true);
         }
     };
 
-    // Handle date selection
+    // Handle single date selection (for instant or legacy)
     const handleDateSelect = (date) => {
         setSelectedDate(date);
         if (selectedTime) {
             sections.markComplete('datetime', true);
+        }
+    };
+
+    // Handle weekday selection - auto-expand to all matching dates in current month
+    const handleWeekdaysChange = (weekdays) => {
+        setSelectedWeekdays(weekdays);
+
+        if (weekdays.length === 0) {
+            // Clear all auto-selected dates
+            setSelectedDates([]);
+            return;
+        }
+
+        // Calculate all dates in current month matching selected weekdays
+        const monthStart = startOfMonth(currentMonth);
+        const monthEnd = endOfMonth(currentMonth);
+        const today = new Date();
+        const newDates = [];
+
+        let day = monthStart;
+        while (day <= monthEnd) {
+            if (weekdays.includes(getDay(day)) && day >= today) {
+                newDates.push(new Date(day));
+            }
+            day = addDays(day, 1);
+        }
+
+        setSelectedDates(newDates);
+        if (newDates.length > 0) {
+            setSelectedDate(newDates[0]); // Set first date as primary
+        }
+    };
+
+    // Handle calendar date click - toggle individual date
+    const handleCalendarDateClick = (date) => {
+        if (date === null) {
+            // Clear all
+            setSelectedDates([]);
+            setSelectedWeekdays([]);
+            setSelectedDate(null);
+            return;
+        }
+
+        const isSelected = selectedDates.some(d => isSameDay(d, date));
+
+        if (isSelected) {
+            // Remove date
+            const newDates = selectedDates.filter(d => !isSameDay(d, date));
+            setSelectedDates(newDates);
+            if (selectedDate && isSameDay(selectedDate, date)) {
+                setSelectedDate(newDates.length > 0 ? newDates[0] : null);
+            }
+        } else {
+            // Add date
+            const newDates = [...selectedDates, date].sort((a, b) => a - b);
+            setSelectedDates(newDates);
+            if (!selectedDate) {
+                setSelectedDate(date);
+            }
+        }
+    };
+
+    // Handle month change - re-calculate recurring dates
+    const handleMonthChange = (newMonth) => {
+        setCurrentMonth(newMonth);
+
+        if (selectedWeekdays.length > 0) {
+            // Re-calculate dates for new month
+            const monthStart = startOfMonth(newMonth);
+            const monthEnd = endOfMonth(newMonth);
+            const today = new Date();
+            const newDates = [];
+
+            let day = monthStart;
+            while (day <= monthEnd) {
+                if (selectedWeekdays.includes(getDay(day)) && day >= today) {
+                    newDates.push(new Date(day));
+                }
+                day = addDays(day, 1);
+            }
+
+            // Merge with existing dates from other months
+            const existingFromOtherMonths = selectedDates.filter(d =>
+                d < monthStart || d > monthEnd
+            );
+            setSelectedDates([...existingFromOtherMonths, ...newDates].sort((a, b) => a - b));
         }
     };
 
@@ -610,26 +706,20 @@ const ScheduleBookingPageRedesigned = () => {
         <div className="min-h-screen bg-gray-50">
 
             {/* Header */}
-            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 pt-8 pb-8">
+            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 pt-[calc(env(safe-area-inset-top)+2rem)] pb-8 transition-all">
                 <div className="max-w-2xl mx-auto px-4">
-                    <button
-                        onClick={() => navigate(-1)}
-                        className="flex items-center gap-1 text-white/80 hover:text-white mb-4 transition-colors touch-target"
-                    >
-                        <ChevronLeft className="w-5 h-5" />
-                        Back
-                    </button>
-
                     <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
+                        <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
                             <CalendarClock className="w-6 h-6 text-white" />
                         </div>
                         <div>
-                            <h1 className="text-2xl font-bold text-white">Schedule Cleaning</h1>
+                            <h1 className="text-2xl font-bold text-white leading-tight">Schedule Cleaning</h1>
                             {selectedAddress && (
-                                <p className="text-emerald-100 text-sm flex items-center gap-1">
-                                    <MapPin className="w-3 h-3" />
-                                    {selectedAddress.label || selectedAddress.address_line_1}
+                                <p className="text-emerald-50 text-xs md:text-sm flex items-center gap-1.5 mt-0.5 opacity-90">
+                                    <MapPin className="w-3.5 h-3.5" />
+                                    <span className="truncate max-w-[200px]">
+                                        {selectedAddress.label || selectedAddress.address_line_1}
+                                    </span>
                                 </p>
                             )}
                         </div>
@@ -647,112 +737,143 @@ const ScheduleBookingPageRedesigned = () => {
                             if (type === 'instant') {
                                 setSelectedTime('ASAP');
                                 setSelectedDate(new Date());
+                                // Keep size section open for instant booking
+                                sections.expandSection('size');
                             } else {
                                 setSelectedTime(null);
                                 setSelectedDate(null);
                             }
                         }}
                     />
+
+                    {/* Date & Time Selection - Only for Schedule */}
+                    {bookingType === 'schedule' && (
+                        <div className="mt-4 pt-4 border-t border-gray-100 animate-fadeIn">
+                            <div className="space-y-5">
+                                {/* 1. Quick Day Selection (DayPickerHorizontal) */}
+                                <DayPickerHorizontal
+                                    selectedDays={selectedWeekdays}
+                                    onDaysChange={handleWeekdaysChange}
+                                />
+
+                                {/* 2. Full Month Calendar */}
+                                <FullMonthCalendar
+                                    currentMonth={currentMonth}
+                                    onMonthChange={handleMonthChange}
+                                    selectedDates={selectedDates}
+                                    onDateClick={handleCalendarDateClick}
+                                    highlightedWeekdays={selectedWeekdays}
+                                    minDate={new Date()}
+                                />
+
+                                {/* 3. Select Time - Show when at least one date is selected */}
+                                {selectedDates.length > 0 && (
+                                    <div className="pt-4 border-t border-gray-100">
+                                        <label className="text-sm font-medium text-gray-700 mb-3 block">
+                                            Select Time Slot
+                                            <span className="text-xs text-gray-400 font-normal ml-2">
+                                                (applies to all selected dates)
+                                            </span>
+                                        </label>
+                                        <TimeSlotPicker
+                                            selectedPeriod={selectedPeriod}
+                                            selectedTime={selectedTime}
+                                            onPeriodChange={setSelectedPeriod}
+                                            onTimeSelect={handleTimeSelect}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
 
             {/* Main Content */}
+            {/* Main Content */}
             <div className="max-w-2xl mx-auto px-4 pb-48 space-y-4">
-                {/* Service Selection */}
+                {/* Service Selection - Unified pill-style */}
                 {services.length > 0 && (
                     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
                         <div className="flex items-center gap-2 mb-4">
                             <Sparkles className="w-5 h-5 text-emerald-600" />
                             <label className="font-semibold text-gray-900">Select Service</label>
                         </div>
-                        <ServiceSelector
-                            services={services}
-                            selectedServiceId={serviceId}
-                            onSelect={(newServiceId) => {
-                                const selectedService = services.find(s => s.id === newServiceId);
-                                setServiceId(newServiceId);
-                                toast.success(`${selectedService.name} selected`, {
-                                    description: 'Service updated successfully',
-                                    duration: 2000,
-                                });
+                        <ServiceTypeToggle
+                            selectedType={
+                                services.find(s => s.id === serviceId)?.name?.toLowerCase().includes('deep') ? 'deep' :
+                                    services.find(s => s.id === serviceId)?.name?.toLowerCase().includes('move') ? 'move' : 'standard'
+                            }
+                            onTypeChange={(type) => {
+                                // Map service type to actual service ID
+                                const typeMap = {
+                                    'standard': 'Standard Cleaning',
+                                    'deep': 'Deep Cleaning',
+                                    'move': 'Move In/Out'
+                                };
+                                const matchingService = services.find(s =>
+                                    s.name.toLowerCase().includes(typeMap[type].toLowerCase())
+                                );
+                                if (matchingService) {
+                                    setServiceId(matchingService.id);
+                                    toast.success(`${matchingService.name} selected`, {
+                                        description: 'Service updated successfully',
+                                        duration: 2000,
+                                    });
+                                }
                             }}
+                            showDescription={true}
                         />
                     </div>
                 )}
 
-                {/* Section 1: Size & Duration */}
-                <CollapsibleSection
-                    title="Size & Duration"
-                    icon={pricingMode === 'hourly' ? Clock : Home}
-                    isOpen={sections.isExpanded('size')}
-                    onOpenChange={() => sections.toggleSection('size')}
-                    isCompleted={sections.isCompleted('size')}
-                    completedSummary={getSizeCompletedSummary()}
-                    sectionNumber={1}
-                >
-                    <PricingModeToggle mode={pricingMode} onModeChange={(mode) => {
-                        setPricingMode(mode);
-                        // Reset selections when switching modes
-                        if (mode === 'size') {
-                            setSelectedHours(null);
-                            setHourlyPrice(0);
-                        } else {
-                            setSelectedSize(null);
-                            setSizePrice(0);
-                        }
-                        sections.markComplete('size', false);
-                    }} />
-                    {pricingMode === 'size' ? (
-                        <HouseSizeCards
-                            selectedSize={selectedSize}
-                            onSelect={handleSizeSelect}
-                            serviceName={services.find(s => s.id === serviceId)?.name}
-                            scrollRef={hourlyScrollRef}
-                        />
-                    ) : (
-                        <HourlyRateCards
-                            selectedHours={selectedHours}
-                            onSelect={handleHourlySelect}
-                            serviceName={selectedServiceName}
-                            scrollRef={hourlyScrollRef}
-                        />
-                    )}
-                </CollapsibleSection>
+                {/* Size & Duration - Unified pill-style */}
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-2 mb-4">
+                        {pricingMode === 'hourly' ? (
+                            <Clock className="w-5 h-5 text-emerald-600" />
+                        ) : (
+                            <Home className="w-5 h-5 text-emerald-600" />
+                        )}
+                        <label className="font-semibold text-gray-900">Size & Duration</label>
+                    </div>
+                    <SizeDurationToggle
+                        pricingMode={pricingMode}
+                        onPricingModeChange={(mode) => {
+                            setPricingMode(mode);
+                            if (mode === 'size') {
+                                setSelectedHours(null);
+                                setHourlyPrice(0);
+                            } else {
+                                setSelectedSize(null);
+                                setSizePrice(0);
+                            }
+                        }}
+                        selectedSize={selectedSize}
+                        onSizeChange={(size) => {
+                            handleSizeSelect(size);
+                        }}
+                        selectedHours={selectedHours?.replace('hrs', '') + 'hrs'}
+                        onHoursChange={(hours) => {
+                            handleHourlySelect(hours);
+                        }}
+                        baseRate={BASE_HOURLY_RATE * getServiceMultiplier(services.find(s => s.id === serviceId)?.name)}
+                    />
+                </div>
 
-                {/* Section 2: Date & Time (Schedule mode only) */}
-                {bookingType === 'schedule' && (
-                    <CollapsibleSection
-                        title="Date & Time"
-                        icon={Calendar}
-                        isOpen={sections.isExpanded('datetime')}
-                        onOpenChange={() => sections.toggleSection('datetime')}
-                        isCompleted={sections.isCompleted('datetime')}
-                        completedSummary={selectedDate && selectedTime ? `${format(selectedDate, 'MMM d')} at ${selectedTime}` : ''}
-                        sectionNumber={2}
-                    >
-                        <div className="space-y-6">
-                            <div>
-                                <label className="text-sm font-medium text-gray-700 mb-2 block">Select Date</label>
-                                <DatePickerHorizontal
-                                    selectedDate={selectedDate}
-                                    onDateSelect={handleDateSelect}
-                                />
-                            </div>
-
-                            {selectedDate && (
-                                <div>
-                                    <label className="text-sm font-medium text-gray-700 mb-2 block">Select Time</label>
-                                    <TimeSlotPicker
-                                        selectedPeriod={selectedPeriod}
-                                        selectedTime={selectedTime}
-                                        onPeriodChange={setSelectedPeriod}
-                                        onTimeSelect={handleTimeSelect}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </CollapsibleSection>
-                )}
+                {/* Payment Mode - Unified pill-style */}
+                <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
+                    <div className="flex items-center gap-2 mb-4">
+                        <CheckCircle className="w-5 h-5 text-emerald-600" />
+                        <label className="font-semibold text-gray-900">Payment</label>
+                    </div>
+                    <PaymentModeToggle
+                        paymentMode={paymentMode}
+                        onPaymentModeChange={setPaymentMode}
+                        discount={5}
+                        showDetails={true}
+                    />
+                </div>
 
                 {/* Instant booking info */}
                 {bookingType === 'instant' && (

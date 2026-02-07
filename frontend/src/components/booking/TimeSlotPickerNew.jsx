@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { cn } from '../../lib/utils';
 
 /**
  * TimeSlotPicker - Time period tabs with slot grid
  * 
  * Features:
- * - Morning/Afternoon/Evening period tabs
+ * - Morning/Afternoon/Evening period tabs with smooth transitions
  * - 3-column grid of time slots
  * - Available/Selected/Unavailable states
+ * - Premium polish with animations
  */
 
 const TIME_PERIODS = [
@@ -36,8 +37,8 @@ const TimeSlotPicker = ({
 
     return (
         <div className={cn("space-y-4", className)}>
-            {/* Period tabs */}
-            <div className="flex gap-2">
+            {/* Period tabs - pill style */}
+            <div className="flex gap-2 p-1 bg-gray-100/80 rounded-2xl">
                 {TIME_PERIODS.map((period) => {
                     const isActive = selectedPeriod === period.id;
                     return (
@@ -45,20 +46,28 @@ const TimeSlotPicker = ({
                             key={period.id}
                             onClick={() => onPeriodChange(period.id)}
                             className={cn(
-                                "flex-1 py-2.5 px-3 rounded-full text-sm font-medium transition-all",
+                                "flex-1 py-3 px-3 rounded-xl text-sm font-semibold",
+                                "transition-all duration-200 ease-out",
+                                "active:scale-[0.97]",
                                 isActive
-                                    ? "bg-emerald-50 border-2 border-emerald-500 text-emerald-700"
-                                    : "bg-gray-50 border border-gray-200 text-gray-600 hover:border-emerald-200"
+                                    ? "bg-white text-emerald-700 shadow-md"
+                                    : "text-gray-500 hover:text-gray-700"
                             )}
                         >
-                            {period.label}
+                            <span className="block">{period.label}</span>
+                            <span className={cn(
+                                "block text-xs font-normal mt-0.5 transition-colors duration-200",
+                                isActive ? "text-emerald-500" : "text-gray-400"
+                            )}>
+                                {period.range}
+                            </span>
                         </button>
                     );
                 })}
             </div>
 
             {/* Time slots grid */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2.5">
                 {currentPeriod.slots.map((slot) => {
                     const isSelected = selectedTime === slot;
                     const isUnavailable = unavailableSlots.includes(slot);
@@ -69,12 +78,14 @@ const TimeSlotPicker = ({
                             onClick={() => !isUnavailable && onTimeSelect(slot)}
                             disabled={isUnavailable}
                             className={cn(
-                                "h-11 rounded-lg text-sm font-medium transition-all",
+                                "h-12 rounded-xl text-sm font-semibold",
+                                "transition-all duration-200 ease-out",
+                                "active:scale-[0.95]",
                                 isSelected
-                                    ? "bg-emerald-600 text-white border-2 border-emerald-600"
+                                    ? "bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-500/30"
                                     : isUnavailable
                                         ? "bg-gray-50 border border-gray-100 text-gray-300 line-through cursor-not-allowed"
-                                        : "bg-white border border-gray-200 text-gray-700 hover:border-emerald-300 hover:bg-emerald-50/50"
+                                        : "bg-white border-2 border-gray-100 text-gray-700 hover:border-emerald-300 hover:shadow-md"
                             )}
                         >
                             {formatTime(slot)}

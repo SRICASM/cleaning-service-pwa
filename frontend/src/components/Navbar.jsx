@@ -79,33 +79,36 @@ const Navbar = ({ transparent = false, selectedAddress, onAddressClick }) => {
         <div className="flex items-center justify-between h-16">
 
           {/* LEFT: Address Header (triggers address flow) or Logo if not logged in */}
-          {user ? (
-            <button
-              onClick={onAddressClick}
-              className="flex items-center gap-2 group text-left"
-            >
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isTransparent ? 'bg-white/20' : 'bg-emerald-50'}`}>
-                <MapPin className={`w-4 h-4 ${isTransparent ? 'text-white' : 'text-emerald-600'}`} />
-              </div>
-              <div>
-                <div className={`flex items-center gap-1 font-semibold text-sm md:text-base ${textColorClass}`}>
-                  <span>{selectedAddress?.label || 'Home'}</span>
-                  <ChevronDown className="w-4 h-4" />
+          {/* Hide when mobile menu is open */}
+          {!mobileMenuOpen && (
+            user ? (
+              <button
+                onClick={onAddressClick}
+                className="flex items-center gap-2 group text-left"
+              >
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${isTransparent ? 'bg-white/20' : 'bg-emerald-50'}`}>
+                  <MapPin className={`w-4 h-4 ${isTransparent ? 'text-white' : 'text-emerald-600'}`} />
                 </div>
-                <p className={`text-xs truncate max-w-[150px] md:max-w-[250px] ${subTextColorClass}`}>
-                  {selectedAddress?.address || 'Select your location'}
-                </p>
-              </div>
-            </button>
-          ) : (
-            <Link to="/" className="flex items-center gap-2" data-testid="nav-logo">
-              <div className="w-10 h-10 rounded-xl bg-green-900 flex items-center justify-center shadow-lg shadow-green-900/20">
-                <Sparkles className="w-5 h-5 text-lime-400" />
-              </div>
-              <span className={`font-heading font-bold text-xl hidden md:inline-block ${isTransparent ? 'text-white' : 'text-green-900'}`}>
-                CleanUpCrew
-              </span>
-            </Link>
+                <div>
+                  <div className={`flex items-center gap-1 font-semibold text-sm md:text-base ${textColorClass}`}>
+                    <span>{selectedAddress?.label || 'Home'}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </div>
+                  <p className={`text-xs truncate max-w-[150px] md:max-w-[250px] ${subTextColorClass}`}>
+                    {selectedAddress?.address || 'Select your location'}
+                  </p>
+                </div>
+              </button>
+            ) : (
+              <Link to="/" className="flex items-center gap-2" data-testid="nav-logo">
+                <div className="w-10 h-10 rounded-xl bg-green-900 flex items-center justify-center shadow-lg shadow-green-900/20">
+                  <Sparkles className="w-5 h-5 text-lime-400" />
+                </div>
+                <span className={`font-heading font-bold text-xl hidden md:inline-block ${isTransparent ? 'text-white' : 'text-green-900'}`}>
+                  CleanUpCrew
+                </span>
+              </Link>
+            )
           )}
 
           {/* CENTER: Desktop Nav Links (Hidden if Logo is taking space? No, usually fine) */}
@@ -195,22 +198,26 @@ const Navbar = ({ transparent = false, selectedAddress, onAddressClick }) => {
           </div>
 
           {/* Mobile Floating Icons (Wallet, Referral, Profile/Menu) */}
-          <div className="md:hidden flex items-center gap-2">
-            {/* Wallet Button */}
-            <button
-              onClick={() => user ? navigate('/wallet') : navigate('/login')}
-              className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors shadow-sm border border-pink-100"
-            >
-              <Wallet className="w-5 h-5" />
-            </button>
+          <div className={`md:hidden flex items-center gap-2 ${mobileMenuOpen ? 'ml-auto' : ''}`}>
+            {/* Wallet Button - Hide when menu open */}
+            {!mobileMenuOpen && (
+              <button
+                onClick={() => user ? navigate('/wallet') : navigate('/login')}
+                className="w-10 h-10 rounded-full bg-pink-50 flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-colors shadow-sm border border-pink-100"
+              >
+                <Wallet className="w-5 h-5" />
+              </button>
+            )}
 
-            {/* Referral Button */}
-            <button
-              onClick={() => user ? navigate('/referrals') : navigate('/login')}
-              className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 hover:bg-emerald-100 transition-colors shadow-sm border border-emerald-100"
-            >
-              <Gift className="w-5 h-5" />
-            </button>
+            {/* Referral Button - Hide when menu open */}
+            {!mobileMenuOpen && (
+              <button
+                onClick={() => user ? navigate('/referrals') : navigate('/login')}
+                className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 hover:bg-emerald-100 transition-colors shadow-sm border border-emerald-100"
+              >
+                <Gift className="w-5 h-5" />
+              </button>
+            )}
 
             {/* Profile/Menu Toggle Button */}
             <button
@@ -270,7 +277,7 @@ const Navbar = ({ transparent = false, selectedAddress, onAddressClick }) => {
                 </div>
               </Link>
 
-              {/* Quick Access Grid - 2x3 (Bookings, Wallet, Support) */}
+              {/* Quick Access Grid - 2x2 */}
               <div className="grid grid-cols-2 gap-3 mb-6">
                 {/* My Bookings */}
                 <Link
@@ -300,29 +307,41 @@ const Navbar = ({ transparent = false, selectedAddress, onAddressClick }) => {
                   <ChevronRight className="w-4 h-4 text-stone-400 absolute top-4 right-4" />
                 </Link>
 
-                {/* Help & Support */}
+                {/* Help & Support (Now 1 col) */}
                 <Link
                   to="/contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="relative bg-white rounded-2xl p-4 border border-stone-200 hover:shadow-md hover:border-stone-300 transition-all active:scale-[0.98] col-span-2"
+                  className="relative bg-white rounded-2xl p-4 border border-stone-200 hover:shadow-md hover:border-stone-300 transition-all active:scale-[0.98]"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-                      <HelpCircle className="w-6 h-6 text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-stone-900">Help & Support</h3>
-                      <p className="text-xs text-stone-500">Get quick help</p>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-stone-400 flex-shrink-0" />
+                  <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
+                    <HelpCircle className="w-6 h-6 text-blue-600" />
                   </div>
+                  <h3 className="font-semibold text-stone-900 mb-1">Help & Support</h3>
+                  <p className="text-xs text-stone-500">Get quick help</p>
+                  <ChevronRight className="w-4 h-4 text-stone-400 absolute top-4 right-4" />
                 </Link>
+
+                {/* Saved Addresses (New Item) */}
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    if (onAddressClick) onAddressClick();
+                  }}
+                  className="relative bg-white rounded-2xl p-4 border border-stone-200 hover:shadow-md hover:border-stone-300 transition-all active:scale-[0.98] text-left"
+                >
+                  <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center mb-3">
+                    <MapPin className="w-6 h-6 text-amber-600" />
+                  </div>
+                  <h3 className="font-semibold text-stone-900 mb-1">Saved Addresses</h3>
+                  <p className="text-xs text-stone-500">Manage locations</p>
+                  <ChevronRight className="w-4 h-4 text-stone-400 absolute top-4 right-4" />
+                </button>
               </div>
 
               {/* Logout Button */}
               <Button
                 variant="ghost"
-                className="w-full justify-start text-red-600 h-12 hover:bg-red-50"
+                className="w-full justify-start text-red-600 h-12 hover:bg-red-50 rounded-xl"
                 onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
               >
                 <LogOut className="w-5 h-5 mr-3" />
@@ -333,7 +352,14 @@ const Navbar = ({ transparent = false, selectedAddress, onAddressClick }) => {
 
           {/* Not Logged In State */}
           {!user && (
-            <div className="space-y-3">
+            <div className="space-y-4 pt-4">
+              <div className="text-center mb-8">
+                <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Sparkles className="w-10 h-10 text-emerald-600" />
+                </div>
+                <h2 className="text-xl font-bold text-stone-900">Welcome to CleanUpCrew</h2>
+                <p className="text-stone-500 text-sm mt-2">Sign in to manage your bookings and profile</p>
+              </div>
               <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="outline" className="w-full h-12 text-base">
                   Sign In

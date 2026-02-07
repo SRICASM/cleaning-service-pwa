@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import {
   Calendar, Zap, ChevronRight, ChevronDown, Gift, Wallet, User,
   Star, Shield, IdCard, Users, Sparkles, MapPin, Clock, Check,
-  Home, Droplets, Shirt, UtensilsCrossed, Package, Moon, X, CheckCircle
+  Home, Droplets, Shirt, UtensilsCrossed, Package, Moon, X, CheckCircle, Briefcase
 } from 'lucide-react';
 import AddressFlowManager from '../components/address/AddressFlowManager';
 
@@ -154,49 +154,45 @@ const HeroSection = ({ expertsAvailable }) => {
   );
 };
 
-// Hero Service Options (Replaces Action Cards)
+// Hero Service Options (2x2 Grid with Office Cleaning)
 const HeroServiceOptions = ({ services, onServiceClick }) => {
   // Fallback defaults if services haven't loaded yet
   const defaults = [
     { id: 1, name: 'Standard Cleaning', icon: Home, color: 'bg-emerald-50', iconColor: 'text-emerald-600', description: 'Regular maintenance' },
     { id: 2, name: 'Deep Cleaning', icon: Sparkles, color: 'bg-teal-50', iconColor: 'text-teal-600', description: 'Thorough refresh' },
     { id: 3, name: 'Move In/Out', icon: Package, color: 'bg-blue-50', iconColor: 'text-blue-600', description: 'Empty home cleaning' },
+    { id: 4, name: 'Office Cleaning', icon: Briefcase, color: 'bg-indigo-50', iconColor: 'text-indigo-600', description: 'Workplace sanitation' },
   ];
 
-  const displayItems = services.length > 0 ? services.map((s, i) => ({
-    ...s,
-    // Cycle through visual styles if not defined
-    icon: defaults[i]?.icon || Home,
-    color: defaults[i]?.color || 'bg-gray-50',
-    iconColor: defaults[i]?.iconColor || 'text-gray-600',
-    description: defaults[i]?.description || 'Professional service'
-  })) : defaults;
+  // Helper to merge defaults with fetched services
+  // If "Office Cleaning" isn't in fetched services, we append the default one
+  const displayItems = [...defaults];
 
   return (
     <div className="relative -mt-24 px-4 z-20 pb-10">
       <div className="max-w-4xl mx-auto">
+        {/* Glassmorphism container */}
         <div className="bg-white rounded-3xl p-4 shadow-xl border border-gray-100/50 backdrop-blur-sm">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
             {displayItems.map((service) => {
               const Icon = service.icon;
               return (
                 <button
                   key={service.id}
                   onClick={() => onServiceClick(service)}
-                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-stone-50 transition-all group text-left border border-transparent hover:border-gray-100"
+                  className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white border-2 border-transparent hover:border-emerald-100 hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all duration-200 group text-center"
                 >
-                  <div className={`w-14 h-14 rounded-2xl ${service.color} flex items-center justify-center group-hover:scale-105 transition-transform shadow-sm`}>
-                    <Icon className={`w-7 h-7 ${service.iconColor}`} />
+                  <div className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}>
+                    <Icon className={`w-6 h-6 ${service.iconColor}`} />
                   </div>
                   <div>
-                    <h3 className="font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">
+                    <h3 className="font-bold text-gray-900 text-sm md:text-base group-hover:text-emerald-700 transition-colors">
                       {service.name}
                     </h3>
-                    <p className="text-xs text-gray-500 font-medium">
+                    <p className="text-xs text-gray-500 font-medium mt-1">
                       {service.description}
                     </p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-gray-300 ml-auto group-hover:text-emerald-500 group-hover:translate-x-1 transition-all" />
                 </button>
               );
             })}
@@ -207,7 +203,7 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
   );
 };
 
-// Booking Flexibility Component (New)
+// Booking Flexibility Component (Restyled to match Service Cards)
 const BookingFlexibility = ({ onSelectMethod }) => {
   return (
     <section className="px-6 pb-12 max-w-7xl mx-auto">
@@ -216,59 +212,41 @@ const BookingFlexibility = ({ onSelectMethod }) => {
         <p className="text-gray-500 mt-2">Choose how you want to book your professional cleaner</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-6 max-w-4xl mx-auto">
+      <div className="grid grid-cols-2 md:grid-cols-2 gap-4 max-w-4xl mx-auto px-4 md:px-0">
         {/* Card 1: By House Size */}
         <button
           onClick={() => onSelectMethod('size')}
-          className="group relative overflow-hidden bg-gradient-to-br from-emerald-500 to-green-600 rounded-2xl md:rounded-3xl p-4 md:p-6 text-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-emerald-200 hover:-translate-y-1 hover:scale-[1.02] animate-in slide-in-from-bottom-8 duration-700 fade-in fill-mode-both delay-100"
+          className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white border-2 border-transparent shadow-sm hover:border-emerald-100 hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all duration-200 group text-center"
         >
-          {/* Shine Effect */}
-          <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300" />
-
-          <div className="relative z-10 flex flex-col h-full justify-between min-h-[120px] md:min-h-[140px]">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl md:rounded-2xl flex items-center justify-center backdrop-blur-sm mb-3 md:mb-4 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-              <Home className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:animate-pulse" />
-            </div>
-            <div>
-              <h3 className="text-lg md:text-xl font-bold mb-1 group-hover:tracking-wide transition-all duration-300 leading-tight">By House Size</h3>
-              <p className="text-emerald-50 text-xs md:text-sm font-medium opacity-90 group-hover:opacity-100 transition-opacity leading-snug">
-                Flat rates for Studios, Apartments & Villas
-              </p>
-            </div>
+          <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Home className="w-7 h-7 text-emerald-600" />
           </div>
-
-          {/* Animated Background Shapes */}
-          <div className="absolute right-0 bottom-0 w-32 h-32 bg-white/10 rounded-full blur-2xl translate-x-10 translate-y-10 group-hover:translate-x-5 group-hover:scale-150 transition-transform duration-500 ease-out" />
-          <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full blur-xl -translate-y-1/2 translate-x-1/2 group-hover:translate-x-0 transition-transform duration-700" />
-
-          <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+          <div>
+            <h3 className="font-bold text-gray-900 text-base md:text-lg group-hover:text-emerald-700 transition-colors">
+              By House Size
+            </h3>
+            <p className="text-xs text-emerald-600/80 font-medium mt-1">
+              Flat rates for any home
+            </p>
+          </div>
         </button>
 
         {/* Card 2: By Hourly Rate */}
         <button
           onClick={() => onSelectMethod('hourly')}
-          className="group relative overflow-hidden bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl md:rounded-3xl p-3 md:p-5 text-white text-left transition-all duration-300 hover:shadow-xl hover:shadow-blue-200 hover:-translate-y-1 hover:scale-[1.02] animate-in slide-in-from-bottom-8 duration-700 fade-in fill-mode-both delay-200"
+          className="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white border-2 border-transparent shadow-sm hover:border-blue-100 hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] transition-all duration-200 group text-center"
         >
-          {/* Shine Effect */}
-          <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300" />
-
-          <div className="relative z-10 flex flex-col h-full justify-between min-h-[120px] md:min-h-[140px]">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-white/20 rounded-xl md:rounded-2xl flex items-center justify-center backdrop-blur-sm mb-3 md:mb-4 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
-              <Clock className="w-5 h-5 md:w-6 md:h-6 text-white group-hover:animate-spin-slow" style={{ animationDuration: '3s' }} />
-            </div>
-            <div>
-              <h3 className="text-base md:text-xl font-bold mb-1 group-hover:tracking-wide transition-all duration-300 leading-tight">By Hourly Rate</h3>
-              <p className="text-blue-50 text-xs md:text-sm font-medium opacity-90 group-hover:opacity-100 transition-opacity leading-snug">
-                Flexible booking for customized cleaning
-              </p>
-            </div>
+          <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+            <Clock className="w-7 h-7 text-blue-600" />
           </div>
-
-          {/* Animated Background Shapes */}
-          <div className="absolute right-0 bottom-0 w-32 h-32 bg-white/10 rounded-full blur-2xl translate-x-10 translate-y-10 group-hover:translate-x-5 group-hover:scale-150 transition-transform duration-500 ease-out" />
-          <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full blur-xl -translate-y-1/2 translate-x-1/2 group-hover:translate-x-0 transition-transform duration-700" />
-
-          <ChevronRight className="absolute right-6 top-1/2 -translate-y-1/2 w-6 h-6 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
+          <div>
+            <h3 className="font-bold text-gray-900 text-base md:text-lg group-hover:text-blue-700 transition-colors">
+              By Hourly Rate
+            </h3>
+            <p className="text-xs text-blue-600/80 font-medium mt-1">
+              Flexible time-based booking
+            </p>
+          </div>
         </button>
       </div>
     </section>
@@ -577,7 +555,29 @@ const HomePage = () => {
     }
   }, [hasBookings, user]);
 
-  // ... (keeping existing address fetch)
+  // Fetch user addresses on mount for Navbar
+  useEffect(() => {
+    const fetchInitialAddress = async () => {
+      if (!user || !token) return;
+      try {
+        const response = await fetch(`${API}/users/me/addresses`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          const list = Array.isArray(data) ? data : (data.addresses || []);
+          if (list.length > 0) {
+            // Prefer default, else first
+            const defaultAddr = list.find(a => a.is_default) || list[0];
+            setSelectedAddress(defaultAddr);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching initial address:', error);
+      }
+    };
+    fetchInitialAddress();
+  }, [user, token]);
 
   const fetchServices = async () => {
     try {
@@ -611,13 +611,23 @@ const HomePage = () => {
 
 
   const handleServiceClick = (service) => {
-    // Navigate to schedule booking with service pre-selected
-    navigate('/schedule-booking-new', { state: { serviceId: service.id } });
+    // Navigate to schedule booking with service pre-selected AND default to instant
+    navigate('/schedule-booking-new', {
+      state: {
+        serviceId: service.id,
+        bookingType: 'instant'
+      }
+    });
   };
 
   const handleBookingMethodClick = (method) => {
-    // Navigate to schedule booking with specific method (size or hourly)
-    navigate('/schedule-booking-new', { state: { bookingMethod: method } });
+    // Navigate to schedule booking with specific method (size or hourly) AND default to instant
+    navigate('/schedule-booking-new', {
+      state: {
+        bookingMethod: method,
+        bookingType: 'instant'
+      }
+    });
   };
 
   const handleCashbackClick = () => {

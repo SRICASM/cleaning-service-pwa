@@ -30,10 +30,13 @@ const AddressFlowManager = ({ open, onClose, onAddressSelected }) => {
             });
             const data = await response.json();
             if (response.ok) {
-                setAddresses(data.addresses || []);
+                // API returns the list directly
+                const addressList = Array.isArray(data) ? data : (data.addresses || []);
+                setAddresses(addressList);
+
                 // Set first as selected if exists
-                if (data.addresses && data.addresses.length > 0) {
-                    setSelectedAddress(data.addresses[0]);
+                if (addressList.length > 0) {
+                    setSelectedAddress(addressList[0]);
                 }
             }
         } catch (error) {

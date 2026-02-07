@@ -25,7 +25,7 @@ const ForgotPasswordPage = () => {
 
         setLoading(true);
         try {
-            await axios.post(`${API}/auth/forgot-password`, { email });
+            await axios.post(`${API}/auth/password-reset/request`, { email });
             setSent(true);
             toast.success('Reset link sent! Check your email.');
         } catch (error) {

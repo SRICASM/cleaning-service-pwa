@@ -99,10 +99,11 @@ const AddressFlowManager = ({ open, onClose, onAddressSelected }) => {
                 await fetchAddresses();
                 setStep('list');
                 if (onAddressSelected) {
-                    onAddressSelected(result.address);
+                    // Backend returns the address object directly
+                    onAddressSelected(result);
                 }
             } else {
-                toast.error(result.message || 'Failed to save address');
+                toast.error(result.detail || result.message || 'Failed to save address');
             }
         } catch (error) {
             console.error('Error saving address:', error);

@@ -165,7 +165,7 @@ const Navbar = ({ transparent = false, selectedAddress, onAddressClick }) => {
                     </div>
                     <DropdownMenuItem onClick={() => navigate('/dashboard')} className="rounded-lg cursor-pointer">
                       <LayoutDashboard className="w-4 h-4 mr-2" />
-                      Dashboard
+                      My Bookings
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/profile')} className="rounded-lg cursor-pointer">
                       <Settings className="w-4 h-4 mr-2" />

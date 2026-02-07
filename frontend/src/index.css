@@ -9,8 +9,10 @@
    ============================================ */
 
 /* Prevent overscroll bounce on iOS */
-html, body {
-    overscroll-behavior: none;
+html,
+body {
+    overscroll-behavior-y: none;
+    overscroll-behavior-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
@@ -366,6 +368,11 @@ html {
 }
 
 @keyframes skeleton-shimmer {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }

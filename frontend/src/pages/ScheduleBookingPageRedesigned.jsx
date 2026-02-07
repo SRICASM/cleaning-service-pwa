@@ -6,7 +6,6 @@ import { CollapsibleSection } from '../components/ui/CollapsibleSection';
 import { BookingTypeToggle } from '../components/booking/BookingTypeToggle';
 import { ServiceTypeToggle } from '../components/booking/ServiceTypeToggle';
 import { SizeDurationToggle } from '../components/booking/SizeDurationToggle';
-import { PaymentModeToggle } from '../components/booking/PaymentModeToggle';
 // HouseSizeCards is now inline with multiplier support
 import { DayPickerHorizontal } from '../components/booking/DayPickerHorizontal';
 import { FullMonthCalendar } from '../components/booking/FullMonthCalendar';
@@ -160,23 +159,13 @@ const HourlyRateCards = ({ selectedHours, onSelect, serviceName, scrollRef }) =>
     const multiplier = getServiceMultiplier(serviceName);
     const hourlyRate = BASE_HOURLY_RATE * multiplier;
 
-    const scroll = (direction) => {
-        if (scrollRef?.current) {
-            const scrollAmount = 200;
-            scrollRef.current.scrollBy({
-                left: direction === 'left' ? -scrollAmount : scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    };
-
     const getMultiplierLabel = () => {
         if (multiplier === 1) return null;
         return `${multiplier}x rate`;
     };
 
     return (
-        <div className="relative group">
+        <div className="relative">
             {/* Rate info banner */}
             <div className="flex items-center justify-between mb-3 px-1">
                 <div className="flex items-center gap-2">
@@ -192,19 +181,14 @@ const HourlyRateCards = ({ selectedHours, onSelect, serviceName, scrollRef }) =>
                 )}
             </div>
 
-            {/* Left Scroll Button */}
-            <button
-                onClick={() => scroll('left')}
-                className="absolute left-0 top-1/2 mt-3 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-2 shadow-lg text-gray-600 hover:text-emerald-600 hover:border-emerald-200 transition-all opacity-0 group-hover:opacity-100 -ml-3"
-                aria-label="Scroll left"
-            >
-                <ChevronLeft className="w-4 h-4" />
-            </button>
+            {/* Edge fade indicators */}
+            <div className="pointer-events-none absolute left-0 top-12 bottom-0 w-6 bg-gradient-to-r from-white to-transparent z-10 rounded-l-2xl" />
+            <div className="pointer-events-none absolute right-0 top-12 bottom-0 w-6 bg-gradient-to-l from-white to-transparent z-10 rounded-r-2xl" />
 
             {/* Scroll Container */}
             <div
                 ref={scrollRef}
-                className="flex overflow-x-auto pb-2 gap-3 snap-x snap-mandatory scrollbar-hide scroll-smooth"
+                className="flex overflow-x-auto py-4 gap-3 snap-x snap-mandatory scrollbar-hide scroll-smooth"
             >
                 {HOUR_OPTIONS.map((option) => {
                     const isSelected = selectedHours === option.id;
@@ -260,15 +244,6 @@ const HourlyRateCards = ({ selectedHours, onSelect, serviceName, scrollRef }) =>
                     );
                 })}
             </div>
-
-            {/* Right Scroll Button */}
-            <button
-                onClick={() => scroll('right')}
-                className="absolute right-0 top-1/2 mt-3 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-2 shadow-lg text-gray-600 hover:text-emerald-600 hover:border-emerald-200 transition-all opacity-0 group-hover:opacity-100 -mr-3"
-                aria-label="Scroll right"
-            >
-                <ChevronRight className="w-4 h-4" />
-            </button>
         </div>
     );
 };
@@ -277,23 +252,13 @@ const HourlyRateCards = ({ selectedHours, onSelect, serviceName, scrollRef }) =>
 const HouseSizeCards = ({ selectedSize, onSelect, serviceName, scrollRef }) => {
     const multiplier = getServiceMultiplier(serviceName);
 
-    const scroll = (direction) => {
-        if (scrollRef?.current) {
-            const scrollAmount = 200;
-            scrollRef.current.scrollBy({
-                left: direction === 'left' ? -scrollAmount : scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    };
-
     const getMultiplierLabel = () => {
         if (multiplier === 1) return null;
         return `${multiplier}x rate`;
     };
 
     return (
-        <div className="relative group">
+        <div className="relative">
             {/* Rate info banner */}
             {multiplier > 1 && (
                 <div className="flex items-center justify-end mb-3 px-1">
@@ -303,19 +268,14 @@ const HouseSizeCards = ({ selectedSize, onSelect, serviceName, scrollRef }) => {
                 </div>
             )}
 
-            {/* Left Scroll Button */}
-            <button
-                onClick={() => scroll('left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-2 shadow-lg text-gray-600 hover:text-emerald-600 hover:border-emerald-200 transition-all opacity-0 group-hover:opacity-100 -ml-3"
-                aria-label="Scroll left"
-            >
-                <ChevronLeft className="w-4 h-4" />
-            </button>
+            {/* Edge fade indicators */}
+            <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-white to-transparent z-10 rounded-l-2xl" />
+            <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-white to-transparent z-10 rounded-r-2xl" />
 
             {/* Scroll Container */}
             <div
                 ref={scrollRef}
-                className="flex overflow-x-auto pb-2 gap-3 snap-x snap-mandatory scrollbar-hide scroll-smooth"
+                className="flex overflow-x-auto py-4 gap-3 snap-x snap-mandatory scrollbar-hide scroll-smooth"
             >
                 {HOUSE_TYPES.map((type) => {
                     const isSelected = selectedSize === type.id;
@@ -368,15 +328,6 @@ const HouseSizeCards = ({ selectedSize, onSelect, serviceName, scrollRef }) => {
                     );
                 })}
             </div>
-
-            {/* Right Scroll Button */}
-            <button
-                onClick={() => scroll('right')}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-2 shadow-lg text-gray-600 hover:text-emerald-600 hover:border-emerald-200 transition-all opacity-0 group-hover:opacity-100 -mr-3"
-                aria-label="Scroll right"
-            >
-                <ChevronRight className="w-4 h-4" />
-            </button>
         </div>
     );
 };
@@ -405,7 +356,6 @@ const ScheduleBookingPageRedesigned = () => {
     const [currentMonth, setCurrentMonth] = useState(new Date()); // Calendar month
     const [selectedTime, setSelectedTime] = useState(null);
     const [selectedPeriod, setSelectedPeriod] = useState('morning');
-    const [paymentMode, setPaymentMode] = useState('now');
     const [loading, setLoading] = useState(false);
 
     // Services and address
@@ -632,8 +582,12 @@ const ScheduleBookingPageRedesigned = () => {
         } else if (pricingMode === 'hourly' && selectedHourOption) {
             parts.push(selectedHourOption.label);
         }
-        if (selectedDate) parts.push(format(selectedDate, 'MMM d'));
-        if (selectedTime) parts.push(selectedTime);
+        if (bookingType === 'instant') {
+            parts.push('Today • ASAP');
+        } else {
+            if (selectedDate) parts.push(format(selectedDate, 'MMM d'));
+            if (selectedTime) parts.push(selectedTime);
+        }
         return parts.join(' • ');
     };
 
@@ -649,7 +603,9 @@ const ScheduleBookingPageRedesigned = () => {
 
     // Validation - either size or hours must be selected based on mode
     const hasDurationSelection = pricingMode === 'size' ? selectedSize : selectedHours;
-    const isValid = hasDurationSelection && selectedDate && selectedTime && selectedAddress && serviceId;
+    const isValid = bookingType === 'instant'
+        ? hasDurationSelection && selectedAddress && serviceId
+        : hasDurationSelection && selectedDate && selectedTime && selectedAddress && serviceId;
 
     // Handle booking
     const handleConfirm = async () => {
@@ -660,10 +616,6 @@ const ScheduleBookingPageRedesigned = () => {
 
         setLoading(true);
         try {
-            const [hours, minutes] = selectedTime.split(':');
-            const scheduledDateTime = new Date(selectedDate);
-            scheduledDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
             // Calculate duration based on pricing mode
             let durationMinutes = 120; // default 2 hours
             if (pricingMode === 'size' && selectedHouseType?.duration) {
@@ -672,26 +624,71 @@ const ScheduleBookingPageRedesigned = () => {
                 durationMinutes = selectedHourOption.hours * 60;
             }
 
-            const bookingData = {
-                service_id: serviceId,
-                booking_type: bookingType === 'instant' ? 'instant' : 'single',
-                scheduled_date: scheduledDateTime.toISOString(),
-                duration_minutes: durationMinutes,
-                address_id: selectedAddress.id,
-                add_on_ids: [],
-                customer_notes: '',
-                property_size_sqft: 1000,
-                bedrooms: 0,
-                bathrooms: 1,
-                payment_method: paymentMode === 'now' ? 'card' : 'cash'
-            };
+            // Use address property data if available, otherwise sensible defaults
+            const propertySqft = selectedAddress?.property_size_sqft || 1000;
+            const bedrooms = selectedAddress?.bedrooms || 0;
+            const bathrooms = selectedAddress?.bathrooms || 1;
 
-            await axios.post(`${API}/bookings/`, bookingData, {
-                headers: getAuthHeaders()
-            });
+            if (bookingType === 'instant') {
+                // Instant: book for right now
+                const bookingData = {
+                    service_id: serviceId,
+                    booking_type: 'instant',
+                    scheduled_date: new Date().toISOString(),
+                    duration_minutes: durationMinutes,
+                    address_id: selectedAddress.id,
+                    add_on_ids: [],
+                    customer_notes: '',
+                    property_size_sqft: propertySqft,
+                    bedrooms: bedrooms,
+                    bathrooms: bathrooms,
+                    payment_method: 'card'
+                };
 
-            toast.success('Booking confirmed!');
-            navigate('/booking/success', { state: { bookingCount: 1, isScheduled: true } });
+                await axios.post(`${API}/bookings/`, bookingData, {
+                    headers: getAuthHeaders()
+                });
+
+                toast.success('Booking confirmed! A cleaner is on the way.');
+                navigate('/booking/success', { state: { bookingCount: 1, isScheduled: false } });
+            } else {
+                // Schedule: book for selected future dates
+                const datesToBook = selectedDates.length > 0
+                    ? selectedDates
+                    : [selectedDate];
+
+                const bookingPromises = datesToBook.map((date) => {
+                    const scheduledDateTime = new Date(date);
+                    const [hours, minutes] = selectedTime.split(':');
+                    scheduledDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+
+                    const bookingData = {
+                        service_id: serviceId,
+                        booking_type: datesToBook.length > 1 ? 'multiple' : 'single',
+                        scheduled_date: scheduledDateTime.toISOString(),
+                        duration_minutes: durationMinutes,
+                        address_id: selectedAddress.id,
+                        add_on_ids: [],
+                        customer_notes: '',
+                        property_size_sqft: propertySqft,
+                        bedrooms: bedrooms,
+                        bathrooms: bathrooms,
+                        payment_method: 'card'
+                    };
+
+                    return axios.post(`${API}/bookings/`, bookingData, {
+                        headers: getAuthHeaders()
+                    });
+                });
+
+                await Promise.all(bookingPromises);
+
+                toast.success(datesToBook.length > 1
+                    ? `${datesToBook.length} bookings confirmed!`
+                    : 'Booking confirmed!'
+                );
+                navigate('/booking/success', { state: { bookingCount: datesToBook.length, isScheduled: true } });
+            }
         } catch (error) {
             console.error(error);
             toast.error(error.response?.data?.detail || 'Failed to create booking');
@@ -706,8 +703,17 @@ const ScheduleBookingPageRedesigned = () => {
         <div className="min-h-screen bg-gray-50">
 
             {/* Header */}
-            <div className="bg-gradient-to-r from-emerald-600 to-emerald-700 pt-[calc(env(safe-area-inset-top)+2rem)] pb-8 transition-all">
+            <div className="bg-gradient-to-br from-emerald-500 via-teal-600 to-emerald-700 pt-[calc(env(safe-area-inset-top)+1rem)] pb-8 transition-all">
                 <div className="max-w-2xl mx-auto px-4">
+                    {/* Back button */}
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="flex items-center gap-1 text-white/80 hover:text-white mb-3 -ml-1 active:scale-95 transition-all"
+                    >
+                        <ChevronLeft className="w-5 h-5" />
+                        <span className="text-sm font-medium">Back</span>
+                    </button>
+
                     <div className="flex items-center gap-3">
                         <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
                             <CalendarClock className="w-6 h-6 text-white" />
@@ -715,12 +721,16 @@ const ScheduleBookingPageRedesigned = () => {
                         <div>
                             <h1 className="text-2xl font-bold text-white leading-tight">Schedule Cleaning</h1>
                             {selectedAddress && (
-                                <p className="text-emerald-50 text-xs md:text-sm flex items-center gap-1.5 mt-0.5 opacity-90">
+                                <button
+                                    onClick={() => toast.info('Address selection coming soon')}
+                                    className="text-emerald-50 text-xs md:text-sm flex items-center gap-1.5 mt-0.5 opacity-90 hover:opacity-100 transition-opacity active:scale-[0.98]"
+                                >
                                     <MapPin className="w-3.5 h-3.5" />
-                                    <span className="truncate max-w-[200px]">
-                                        {selectedAddress.label || selectedAddress.address_line_1}
+                                    <span className="truncate max-w-[200px] underline underline-offset-2 decoration-white/30">
+                                        {selectedAddress.label || selectedAddress.street_address}
                                     </span>
-                                </p>
+                                    <ChevronRight className="w-3 h-3 text-white/50" />
+                                </button>
                             )}
                         </div>
                     </div>
@@ -861,19 +871,7 @@ const ScheduleBookingPageRedesigned = () => {
                     />
                 </div>
 
-                {/* Payment Mode - Unified pill-style */}
-                <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-                    <div className="flex items-center gap-2 mb-4">
-                        <CheckCircle className="w-5 h-5 text-emerald-600" />
-                        <label className="font-semibold text-gray-900">Payment</label>
-                    </div>
-                    <PaymentModeToggle
-                        paymentMode={paymentMode}
-                        onPaymentModeChange={setPaymentMode}
-                        discount={5}
-                        showDetails={true}
-                    />
-                </div>
+
 
                 {/* Instant booking info */}
                 {bookingType === 'instant' && (
@@ -884,7 +882,7 @@ const ScheduleBookingPageRedesigned = () => {
                         <div>
                             <h4 className="font-semibold text-emerald-900">Priority Dispatch</h4>
                             <p className="text-sm text-emerald-700">
-                                A cleaner will be assigned immediately and arrive within 90 minutes.
+                                A cleaner will be assigned immediately and arrive within 30 minutes.
                             </p>
                         </div>
                     </div>
@@ -896,8 +894,6 @@ const ScheduleBookingPageRedesigned = () => {
                 isVisible={showSticky || sections.allCompleted || bookingType === 'instant'}
                 bookingSummary={getSummary()}
                 price={totalPrice}
-                paymentMode={paymentMode}
-                onPaymentModeChange={setPaymentMode}
                 onConfirm={handleConfirm}
                 isLoading={loading}
                 isDisabled={!isValid}

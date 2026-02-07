@@ -436,12 +436,19 @@ async def create_booking(
             
         data.address_id = address.id
     
-    # Validate scheduled date is in future
+    # Validate scheduled date
     if data.scheduled_date.tzinfo is None:
         data.scheduled_date = data.scheduled_date.replace(tzinfo=timezone.utc)
-        
-    if data.scheduled_date < datetime.now(timezone.utc):
-        raise BadRequestException("Scheduled date must be in the future")
+
+    # Instant bookings use current time; scheduled bookings must be in the future
+    if data.booking_type == "instant":
+        # For instant bookings, set scheduled_date to now if it's in the past
+        now = datetime.now(timezone.utc)
+        if data.scheduled_date < now:
+            data.scheduled_date = now
+    else:
+        if data.scheduled_date < datetime.now(timezone.utc):
+            raise BadRequestException("Scheduled date must be in the future")
 
     # Calculate booking duration for overlap check
     # Calculate booking duration and validate inputs

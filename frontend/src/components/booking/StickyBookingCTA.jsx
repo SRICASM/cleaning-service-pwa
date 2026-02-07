@@ -3,21 +3,12 @@ import { cn } from '../../lib/utils';
 
 /**
  * StickyBookingCTA - Slide-up sticky bottom bar for booking confirmation
- * 
- * Features:
- * - Slides up when user scrolls to bottom
- * - Shows booking summary and price
- * - Safe area support for notched devices
- * - Premium glassmorphism design
- * - Primary CTA with gradient amber background
  */
 const StickyBookingCTA = ({
     isVisible = false,
     bookingSummary = '',
     price = 0,
     originalPrice,
-    paymentMode = 'now',
-    onPaymentModeChange,
     onConfirm,
     isLoading = false,
     isDisabled = false,
@@ -38,35 +29,15 @@ const StickyBookingCTA = ({
             )}
             style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
         >
-            <div className="max-w-4xl mx-auto px-4 py-4">
-                {/* Summary Row */}
-                {bookingSummary && (
-                    <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-100">
-                        <span className="text-xs font-medium text-gray-400 uppercase tracking-wide">Summary</span>
-                        <span className="text-sm font-semibold text-gray-800 truncate max-w-[200px]">
-                            {bookingSummary}
-                        </span>
-                    </div>
-                )}
-
-                {/* Price and Payment Row */}
-                <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                        <select
-                            value={paymentMode}
-                            onChange={(e) => onPaymentModeChange?.(e.target.value)}
-                            className={cn(
-                                "bg-gray-50 border-2 border-gray-100 rounded-xl px-4 py-2.5",
-                                "text-sm font-semibold text-gray-700",
-                                "focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500",
-                                "transition-all duration-200",
-                                "appearance-none cursor-pointer"
-                            )}
-                            style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1.25rem', paddingRight: '2.5rem' }}
-                        >
-                            <option value="now">Pay Now</option>
-                            <option value="later">Pay Later</option>
-                        </select>
+            <div className="max-w-4xl mx-auto px-4 pt-3 pb-5">
+                {/* Price + Summary Row */}
+                <div className="flex items-center justify-between mb-3">
+                    <div>
+                        {bookingSummary && (
+                            <span className="text-sm font-semibold text-gray-800 truncate block max-w-[200px]">
+                                {bookingSummary}
+                            </span>
+                        )}
                     </div>
 
                     <div className="text-right">
@@ -112,6 +83,8 @@ const StickyBookingCTA = ({
                             </svg>
                             Processing...
                         </>
+                    ) : isDisabled ? (
+                        'Complete all steps'
                     ) : (
                         <>
                             Confirm Booking

@@ -118,7 +118,7 @@ const SizeDurationToggle = ({
             </div>
 
             {/* Size/Duration Cards - Horizontal scroll */}
-            <div className="overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+            <div className="overflow-x-auto py-4 -mx-1 px-1 scrollbar-hide">
                 <div className="flex gap-3">
                     {options.map((option) => {
                         const isSelected = selectedValue === option.id;

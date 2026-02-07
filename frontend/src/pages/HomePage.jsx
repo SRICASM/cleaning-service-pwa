@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import {
   Calendar, Zap, ChevronRight, ChevronDown, Gift, Wallet, User,
   Star, Shield, IdCard, Users, Sparkles, MapPin, Clock, Check,
-  Home, Droplets, Shirt, UtensilsCrossed, Package, Moon, X, CheckCircle, Briefcase
+  Home, Droplets, Shirt, UtensilsCrossed, Package, Moon, X, CheckCircle, Briefcase, Tag
 } from 'lucide-react';
 import AddressFlowManager from '../components/address/AddressFlowManager';
 
@@ -158,7 +158,7 @@ const HeroSection = ({ expertsAvailable }) => {
 const HeroServiceOptions = ({ services, onServiceClick }) => {
   // Fallback defaults if services haven't loaded yet
   const defaults = [
-    { id: 1, name: 'Standard Cleaning', icon: Home, color: 'bg-emerald-50', iconColor: 'text-emerald-600', description: 'Regular maintenance' },
+    { id: 1, name: 'Standard Cleaning', icon: Home, color: 'bg-emerald-50', iconColor: 'text-emerald-600', description: 'Regular maintenance', popular: true },
     { id: 2, name: 'Deep Cleaning', icon: Sparkles, color: 'bg-teal-50', iconColor: 'text-teal-600', description: 'Thorough refresh' },
     { id: 3, name: 'Move In/Out', icon: Package, color: 'bg-blue-50', iconColor: 'text-blue-600', description: 'Empty home cleaning' },
     { id: 4, name: 'Office Cleaning', icon: Briefcase, color: 'bg-indigo-50', iconColor: 'text-indigo-600', description: 'Workplace sanitation' },
@@ -168,7 +168,7 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
   const displayItems = [...defaults];
 
   return (
-    <div className="relative -mt-24 px-4 z-20 pb-10">
+    <div className="relative -mt-24 px-4 z-20 pb-4">
       <div className="max-w-4xl mx-auto">
         {/* Glassmorphism container - Frosted Glass Effect */}
         <div className="bg-white/80 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/40 ring-1 ring-black/5">
@@ -181,6 +181,11 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
                   onClick={() => onServiceClick(service)}
                   className="relative overflow-hidden flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-white/50 hover:bg-white border border-white/60 hover:border-emerald-100 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all duration-200 group text-center backdrop-blur-sm"
                 >
+                  {service.popular && (
+                    <span className="absolute top-2 right-2 text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-white px-2 py-0.5 rounded-full">
+                      Popular
+                    </span>
+                  )}
                   <div className={`w-12 h-12 rounded-xl ${service.color} flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
                     <Icon className={`w-6 h-6 ${service.iconColor}`} />
                   </div>
@@ -188,7 +193,7 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
                     <h3 className="font-bold text-gray-900 text-sm md:text-base group-hover:text-emerald-700 transition-colors">
                       {service.name}
                     </h3>
-                    <p className="text-xs text-gray-500 font-medium mt-1 group-hover:text-gray-600">
+                    <p className="text-xs text-gray-500 font-medium mt-1 group-hover:text-gray-600 line-clamp-1">
                       {service.description}
                     </p>
                   </div>
@@ -202,63 +207,77 @@ const HeroServiceOptions = ({ services, onServiceClick }) => {
   );
 };
 
-// Booking Flexibility Component (Vibrant Glassmorphic Cards)
+// Booking Flexibility Component (Frosted Glass Plate Style)
 const BookingFlexibility = ({ onSelectMethod }) => {
   return (
-    <section className="px-6 pb-12 max-w-7xl mx-auto">
-      <div className="text-center mb-8 animate-in slide-in-from-bottom-4 duration-700 fade-in fill-mode-both">
+    <section className="relative px-6 pb-12 max-w-7xl mx-auto">
+      {/* Background Blobs for Glass Effect */}
+      <div className="absolute top-20 left-1/4 w-64 h-64 bg-emerald-300/20 rounded-full blur-3xl pointer-events-none -z-10" />
+      <div className="absolute bottom-0 right-1/4 w-64 h-64 bg-blue-300/20 rounded-full blur-3xl pointer-events-none -z-10" />
+
+      <div className="text-center mb-4 animate-in slide-in-from-bottom-4 duration-700 fade-in fill-mode-both">
         <h2 className="text-2xl font-bold text-gray-900">Cleaning Your Way</h2>
         <p className="text-gray-500 mt-2">Choose how you want to book your professional cleaner</p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-2 gap-4 max-w-4xl mx-auto px-4 md:px-0">
-        {/* Card 1: By House Size (Emerald Gradient) */}
-        <button
-          onClick={() => onSelectMethod('size')}
-          className="relative overflow-hidden group flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/20 active:scale-[0.98] transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/40 text-center"
-        >
-          {/* Glass Overlay */}
-          <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 backdrop-blur-[1px]" />
+      <div className="max-w-4xl mx-auto px-4 md:px-0">
+        {/* Frosted Glass Plate Container (Matches Service Grid) */}
+        <div className="bg-white/80 backdrop-blur-md rounded-3xl p-4 shadow-xl border border-white/40 ring-1 ring-black/5">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-4">
+            {/* Card 1: By House Size (Glassmorphic Emerald) */}
+            <button
+              onClick={() => onSelectMethod('size')}
+              className="relative overflow-hidden group flex flex-col items-center justify-center gap-2 md:gap-3 p-3 md:p-6 rounded-2xl bg-white/50 hover:bg-white border border-white/60 hover:border-emerald-100 shadow-sm hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all duration-200 text-center backdrop-blur-sm"
+            >
+              {/* Popular Badge (Optional, added for consistency/future use) */}
+              {/* <span className="absolute top-2 right-2 text-[10px] font-bold uppercase tracking-wider bg-emerald-500 text-white px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">Popular</span> */}
 
-          {/* Shine Effect */}
-          <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                <Home className="w-5 h-5 md:w-7 md:h-7 drop-shadow-sm" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 text-sm md:text-lg drop-shadow-sm leading-tight group-hover:text-emerald-700 transition-colors">
+                  By House<br className="md:hidden" /> Size
+                </h3>
+                <p className="text-[10px] md:text-xs text-gray-500 font-medium mt-1 leading-tight hidden md:block group-hover:text-gray-600">
+                  Flat rates for any home
+                </p>
+                <p className="text-[10px] text-gray-500 font-medium mt-0.5 md:hidden">
+                  Flat rates
+                </p>
+                <p className="text-[10px] text-emerald-600 font-bold mt-1 bg-emerald-50/80 px-2 py-0.5 rounded-full inline-block">
+                  From AED 150
+                </p>
+              </div>
+              <ChevronRight className="absolute right-1.5 md:right-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-300 group-hover:text-emerald-500 group-hover:translate-x-0.5 transition-all" />
+            </button>
 
-          <div className="relative z-10 w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
-            <Home className="w-7 h-7 text-white drop-shadow-sm" />
+            {/* Card 2: By Hourly Rate (Glassmorphic Blue) */}
+            <button
+              onClick={() => onSelectMethod('hourly')}
+              className="relative overflow-hidden group flex flex-col items-center justify-center gap-2 md:gap-3 p-3 md:p-6 rounded-2xl bg-white/50 hover:bg-white border border-white/60 hover:border-blue-100 shadow-sm hover:shadow-lg hover:shadow-blue-500/10 active:scale-[0.98] transition-all duration-200 text-center backdrop-blur-sm"
+            >
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
+                <Clock className="w-5 h-5 md:w-7 md:h-7 drop-shadow-sm" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900 text-sm md:text-lg drop-shadow-sm leading-tight group-hover:text-blue-700 transition-colors">
+                  By Hourly<br className="md:hidden" /> Rate
+                </h3>
+                <p className="text-[10px] md:text-xs text-gray-500 font-medium mt-1 leading-tight hidden md:block group-hover:text-gray-600">
+                  Flexible time-based booking
+                </p>
+                <p className="text-[10px] text-gray-500 font-medium mt-0.5 md:hidden">
+                  Flexible time
+                </p>
+                <p className="text-[10px] text-blue-600 font-bold mt-1 bg-blue-50/80 px-2 py-0.5 rounded-full inline-block">
+                  AED 75/hr
+                </p>
+              </div>
+              <ChevronRight className="absolute right-1.5 md:right-3 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-gray-300 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all" />
+            </button>
           </div>
-          <div className="relative z-10">
-            <h3 className="font-bold text-white text-base md:text-lg drop-shadow-sm">
-              By House Size
-            </h3>
-            <p className="text-xs text-emerald-100 font-medium mt-1">
-              Flat rates for any home
-            </p>
-          </div>
-        </button>
-
-        {/* Card 2: By Hourly Rate (Blue Gradient) */}
-        <button
-          onClick={() => onSelectMethod('hourly')}
-          className="relative overflow-hidden group flex flex-col items-center justify-center gap-3 p-6 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/40 text-center"
-        >
-          {/* Glass Overlay */}
-          <div className="absolute inset-0 bg-white/0 group-hover:bg-white/10 transition-colors duration-300 backdrop-blur-[1px]" />
-
-          {/* Shine Effect */}
-          <div className="absolute -top-[50%] -left-[50%] w-[200%] h-[200%] bg-gradient-to-br from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-
-          <div className="relative z-10 w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-inner">
-            <Clock className="w-7 h-7 text-white drop-shadow-sm" />
-          </div>
-          <div className="relative z-10">
-            <h3 className="font-bold text-white text-base md:text-lg drop-shadow-sm">
-              By Hourly Rate
-            </h3>
-            <p className="text-xs text-blue-100 font-medium mt-1">
-              Flexible time-based booking
-            </p>
-          </div>
-        </button>
+        </div>
       </div>
     </section>
   );
@@ -274,13 +293,16 @@ const CashbackBanner = ({ onClick }) => {
       <div className="bg-gradient-to-r from-green-50 to-emerald-100 rounded-xl px-4 py-4 flex items-center gap-3 hover:from-green-100 hover:to-emerald-200 transition-colors shadow-sm border border-green-100">
         <div className="w-10 h-10 flex-shrink-0">
           <div className="w-full h-full bg-emerald-500 rounded-full flex items-center justify-center relative shadow-sm">
-            <span className="text-white text-sm font-bold">%</span>
+            <Tag className="w-5 h-5 text-white" />
             <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-yellow-400 rounded-full animate-ping" />
           </div>
         </div>
-        <p className="text-emerald-900 font-semibold text-sm flex-1 text-left">
-          Get 100% cashback on your first booking!
-        </p>
+        <div className="flex-1 text-left">
+          <p className="text-emerald-900 font-semibold text-sm">
+            Get 100% cashback on your first booking!
+          </p>
+          <p className="text-emerald-600 text-xs font-medium mt-0.5">Claim Now</p>
+        </div>
         <ChevronRight className="w-5 h-5 text-emerald-700" />
       </div>
     </button>
@@ -292,7 +314,7 @@ const CashbackBanner = ({ onClick }) => {
 // Referral Banner
 const ReferralBanner = ({ onReferClick }) => {
   return (
-    <section className="mx-6 my-4 max-w-7xl mx-auto">
+    <section className="mx-6 my-4 max-w-7xl">
       <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-6 relative overflow-hidden shadow-lg">
         <div className="relative z-10 flex flex-col items-start max-w-[70%]">
           <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white text-[10px] font-bold uppercase tracking-wider mb-2">
@@ -328,24 +350,32 @@ const TrustIndicators = () => {
     {
       id: 'kyc',
       icon: IdCard,
-      title: 'Valid ID\nVerified'
+      title: 'Valid ID\nVerified',
+      bgColor: 'bg-emerald-50',
+      iconColor: 'text-emerald-500'
     },
     {
       id: 'background',
       icon: Shield,
-      title: 'Background\nChecked'
+      title: 'Background\nChecked',
+      bgColor: 'bg-blue-50',
+      iconColor: 'text-blue-500'
     },
     {
       id: 'training',
       icon: Users,
-      title: 'Expertly\nTrained'
+      title: 'Expertly\nTrained',
+      bgColor: 'bg-indigo-50',
+      iconColor: 'text-indigo-500'
     },
     {
       id: 'rating',
       icon: null,
       isRating: true,
       rating: '4.8',
-      title: 'Top Rated\nCleaners'
+      title: 'Top Rated\nCleaners',
+      bgColor: 'bg-amber-50',
+      iconColor: 'text-yellow-400'
     }
   ];
 
@@ -357,14 +387,17 @@ const TrustIndicators = () => {
             key={item.id}
             className="flex flex-col items-center text-center"
           >
-            <div className="w-12 h-12 rounded-full bg-gray-50 flex items-center justify-center mb-2">
+            <div className={`w-12 h-12 rounded-full ${item.bgColor} flex items-center justify-center mb-2`}>
               {item.isRating ? (
                 <Star className="w-6 h-6 text-yellow-400 fill-yellow-400" />
               ) : (
-                <item.icon className="w-6 h-6 text-emerald-500" />
+                <item.icon className={`w-6 h-6 ${item.iconColor}`} />
               )}
             </div>
-            <p className="text-[10px] md:text-xs font-medium text-gray-500 leading-snug whitespace-pre-line">
+            {item.isRating && (
+              <p className="text-sm font-bold text-gray-900 -mt-0.5 mb-0.5">{item.rating}</p>
+            )}
+            <p className="text-xs font-medium text-gray-500 leading-snug whitespace-pre-line">
               {item.title}
             </p>
           </div>
@@ -393,13 +426,15 @@ const StarterPackModal = ({ onClaim, visible, onClose }) => {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Button */}
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
-            aria-label="Close"
-          >
-            <X className="w-4 h-4 text-gray-600" />
-          </button>
+          <div className="relative">
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 z-10 w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center transition-colors backdrop-blur-sm"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4 text-white" />
+            </button>
+          </div>
 
           {/* Header with Sparkles */}
           <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-t-3xl px-6 pt-6 pb-8 relative overflow-hidden">
@@ -426,8 +461,8 @@ const StarterPackModal = ({ onClaim, visible, onClose }) => {
               <div className="flex items-center justify-between">
                 <span className="text-sm font-semibold text-gray-900">Special Price</span>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold text-emerald-600">149</span>
                   <span className="text-sm font-semibold text-emerald-600">AED</span>
+                  <span className="text-3xl font-bold text-emerald-600">149</span>
                 </div>
               </div>
             </div>
@@ -533,7 +568,7 @@ const HomePage = () => {
       }
 
       try {
-        const response = await fetch(`${API}/bookings/user`, {
+        const response = await fetch(`${API}/bookings`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -611,12 +646,22 @@ const HomePage = () => {
     }
   };
 
-  const checkAvailability = () => {
-    // Simple mock logic for now - available between 8 AM and 10 PM
-    const now = new Date();
-    const hour = now.getHours();
-    const isAvailable = hour >= 8 && hour < 22;
-    setExpertsAvailable(isAvailable);
+  const checkAvailability = async () => {
+    try {
+      const response = await fetch(`${API}/availability/check`);
+      if (response.ok) {
+        const data = await response.json();
+        setExpertsAvailable(data.status === 'available' || data.status === 'limited');
+      } else {
+        // Fallback to time-based check if API fails
+        const hour = new Date().getHours();
+        setExpertsAvailable(hour >= 8 && hour < 22);
+      }
+    } catch (error) {
+      // Fallback to time-based check if API unreachable
+      const hour = new Date().getHours();
+      setExpertsAvailable(hour >= 8 && hour < 22);
+    }
   };
 
 

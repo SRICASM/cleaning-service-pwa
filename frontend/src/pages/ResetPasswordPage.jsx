@@ -40,7 +40,7 @@ const ResetPasswordPage = () => {
 
         setLoading(true);
         try {
-            await axios.post(`${API}/auth/reset-password`, {
+            await axios.post(`${API}/auth/password-reset/confirm`, {
                 token,
                 new_password: password
             });
